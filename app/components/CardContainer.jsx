@@ -7,15 +7,14 @@ export default function CardContainer() {
     {
       imageSrc: "/images/TaskGrid.png",
       title: "TaskGrid",
-      description: "説明文1",
-      author: "著者1",
-      date: "2024-04-01",
+      description:
+        "タスク管理をもっと直感的に、効率的にするタスク管理アプリです。Firebaseを使ってリアルタイムでデータを同期します。アカウント登録やログイン機能があります。タスクを「緊急度×重要度」で簡単に整理できるところが大きな魅力です。",
+      date: "2025-02-24",
     },
     {
       imageSrc: "/images/human.jpg",
       title: "タイトル2",
       description: "説明文2",
-      author: "著者2",
       date: "2024-04-02",
     },
   ];
@@ -28,7 +27,6 @@ export default function CardContainer() {
           imageSrc={card.imageSrc}
           title={card.title}
           description={card.description}
-          author={card.author}
           date={card.date}
         />
       ))}
