@@ -40,18 +40,18 @@ export default function BlogList({ posts }) {
       <div>
         {filteredPosts.map((post) => (
           <Link href={`/blogs/${post.slug}`} key={post.slug} className="block">
-            <div className="w-full border-b dark:bg-white border-slate-300 px-6 py-4 flex justify-start items-center space-x-4 hover:bg-slate-100 transition-all duration-300 cursor-pointer">
-              <div className="text-5xl p-4 bg-slate-100 rounded-lg w-20 h-20 flex items-center justify-center">
+            <div className="w-full border-b border-slate-300 px-6 py-4 flex justify-start items-center space-x-4 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300 cursor-pointer dark:bg-black">
+              <div className="text-5xl p-4 bg-slate-100 dark:bg-slate-500 rounded-lg w-20 h-20 flex items-center justify-center">
                 {categoryEmojis[post.category] || "📄"}
               </div>
               {/* 記載 */}
-              <div className="my-2">
+              <div className="my-2 dark:text-white">
                 <h3>{post.date}</h3>
                 <div className="flex flex-wrap w-full justify-start space-x-1 py-1">
                   {post.keywords.map((keyword, idx) => (
                     <div
                       key={idx}
-                      className="inline-flex items-center rounded-md bg-gray-50 dark:bg-white px-2 py-1 text-xs font-medium text-gray-600 dark:text-black ring-1 ring-inset ring-gray-500/10"
+                      className="inline-flex items-center rounded-md bg-gray-50 dark:bg-slate-600 px-2 py-1 text-xs font-medium text-gray-600 dark:text-white ring-1 ring-inset ring-gray-500/10"
                     >
                       {keyword}
                     </div>
