@@ -55,6 +55,12 @@ export default function RootLayout({ children }) {
         <meta name="keywords" content={metadata.keywords} />
         <meta name="author" content={metadata.author} />
 
+        {/* Google Search Console 所有権確認用タグ */}
+        <meta
+          name="google-site-verification"
+          content="duIULWMuN87iNsRpBQM9ChtbDg1qQ-Ct15oLlqt5HV0"
+        />
+
         {/* OGP（Open Graph Protocol）タグ */}
         <meta property="og:title" content={metadata.title} />
         <meta property="og:description" content={metadata.description} />
