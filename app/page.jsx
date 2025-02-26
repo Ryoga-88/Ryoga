@@ -2,6 +2,7 @@ import { CiCircleCheck } from "react-icons/ci";
 import { SiNextdotjs } from "react-icons/si";
 import { RiTailwindCssFill } from "react-icons/ri";
 import { FaReact } from "react-icons/fa";
+import cardsData from "app/contents/projects/projects";
 
 export default function Home() {
   return (
@@ -33,38 +34,55 @@ export default function Home() {
             <p className="mb-5 dark:text-white">
               私が作ってきたポートフォリオはこちら
             </p>
-            <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6">
-              <img
-                src={`/images/portfolio1.jpg`}
-                alt=""
-                className="w-full h-36 lg:h-72 object-cover rounded-md cursor-pointer"
-              />
-              <img
-                src={`/images/portfolio2.jpg`}
-                alt=""
-                className="w-full h-36 lg:h-72 object-cover rounded-md cursor-pointer"
-              />
-              <img
-                src={`/images/portfolio3.jpg`}
-                alt=""
-                className="w-full h-36 lg:h-72 object-cover rounded-md cursor-pointer"
-              />
-              <img
-                src={`/images/portfolio4.jpg`}
-                alt=""
-                className="w-full h-36 lg:h-72 object-cover rounded-md cursor-pointer"
-              />
-              <img
-                src={`/images/portfolio5.jpg`}
-                alt=""
-                className="w-full h-36 lg:h-72 object-cover rounded-md cursor-pointer"
-              />
-              <img
-                src={`/images/portfolio6.jpg`}
-                alt=""
-                className="w-full h-36 lg:h-72 object-cover rounded-md cursor-pointer"
-              />
-            </div>
+            {cardsData.map((card, index) => {
+              return (
+                <div
+                  key={index}
+                  className="bg-white rounded-lg shadow-md flex flex-col md:flex-row w-full max-w-3xl md:h-48 dark:bg-black border dark:border-white mb-4"
+                >
+                  {/* 画像 - モバイルでは上部、PCでは左側 */}
+                  <div className="w-full md:w-1/3 h-48 md:h-full">
+                    <img
+                      className="object-cover h-full w-full rounded-t-lg md:rounded-t-none md:rounded-l-lg"
+                      src={card.imageSrc}
+                      alt={card.title}
+                    />
+                  </div>
+
+                  {/* コンテンツ - モバイルでは下部、PCでは右側 */}
+                  <div className="p-4 flex flex-col justify-between w-full md:w-2/3">
+                    {/* タイトル */}
+                    <h2 className="text-xl font-bold text-gray-900 mb-1 dark:text-white">
+                      {card.title}
+                    </h2>
+
+                    {/* 説明文 - PCでは全文表示、モバイルでは条件付き */}
+                    <div className="overflow-y-auto flex-grow mb-2 pr-1">
+                      {/* PCでの表示 (md以上) */}
+                      <p className="hidden md:block text-gray-700 dark:text-white">
+                        {card.description}
+                      </p>
+
+                      {/* モバイルでの表示 (md未満) */}
+                      <div className="block md:hidden">
+                        <p className="text-gray-700">
+                          {card.description.length > 50
+                            ? `${card.description.slice(0, 50)}...`
+                            : card.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* 日付情報 */}
+                    <div className="text-sm mt-auto">
+                      <p className="text-gray-600 dark:text-white">
+                        {card.date}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </section>
         {/* 技術スタック */}
