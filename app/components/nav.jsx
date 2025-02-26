@@ -101,7 +101,7 @@ export default function Nav({ isOpen, setIsOpen, isDarkMode, toggleDarkMode }) {
       <div
         className={`fixed top-0 left-0 h-full bg-white/90 dark:bg-black/90 shadow-lg transform transition-all duration-500 ease-out ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } w-3/4 md:w-1/6 backdrop-blur-md md:hidden z-40`}
+        } w-3/4 md:w-1/6 backdrop-blur-md md:hidden z-40 `}
       >
         <ul className="flex flex-col space-y-6 pt-20 px-6">
           {navItems.map((item) => (
