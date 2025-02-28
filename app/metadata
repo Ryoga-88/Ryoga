@@ -11,4 +11,7 @@ export const metadata = {
   siteLanguage: "ja",
   publishedAt: new Date().toISOString(),
   themeColor: "#3B82F6" 
+  icons: {
+    icon: "/favicon.ico", // Faviconファイルのパス
+  },
 }
