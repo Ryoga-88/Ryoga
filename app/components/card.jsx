@@ -41,7 +41,7 @@ export default function Card({ imageSrc, title, description, author, date }) {
 
           {/* モバイルでの表示 (md未満) */}
           <div className="block md:hidden">
-            <p className="text-gray-700">
+            <p className="text-gray-700 dark:text-white">
               {isExpanded ? description : shortDescription}
             </p>
 

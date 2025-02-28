@@ -65,7 +65,7 @@ export default function Home() {
 
                       {/* モバイルでの表示 (md未満) */}
                       <div className="block md:hidden">
-                        <p className="text-gray-700">
+                        <p className="text-gray-700 dark:text-white">
                           {card.description.length > 50
                             ? `${card.description.slice(0, 50)}...`
                             : card.description}
