@@ -48,7 +48,7 @@ const nextConfig = {
 
   // 環境変数の公開設定
   env: {
-    SITE_URL: "https://ryogaio.vercel.app/", // サイトのURL（実際のURLに変更してください）
+    SITE_URL: "https://ryogaio.vercel.app/",
     SITE_NAME: "花房亮雅 | ポートフォリオ",
   },
 };

@@ -1,9 +1,9 @@
 export const metadata = {
-  title: "花房亮雅 | 大阪公立大学大学院 - 知能情報学分野専攻 研究者ポートフォリオ",
+  title: "花房 亮雅 (Ryoga Hanafusa)",
   description:
-    "花房亮雅(Ryoga Hanafusa)のポートフォリオサイト。大阪公立大学大学院にて知能情報学を研究。ラフ集合理論に基づくクラスタリングベースの協調フィルタリングを専門とし、JavaScript、React、Next.js、Python等の技術スタックを持つエンジニア。",
+    "花房亮雅は大学院生/基幹情報学専攻/知能情報学分野、株式会社Affectify取締役、第八期公益財団法人シマノ財団奨学生、2023年度・2024年度フジシール財団奨学生。AI・ラフ集合理論によって人間のあいまいな価値判断を考慮したビッグデータの解析、推薦システムの作成、データマイニングや学習アルゴリズムの改良を行なっている",
   keywords:
-    "花房亮雅, はなふさりょうが, Ryoga Hanafusa, 大阪公立大学大学院, 知能情報学, ラフ集合理論, 協調フィルタリング, React, JavaScript, Next.js, Python, ポートフォリオ",
+    "花房亮雅, はなふさりょうが, Ryoga Hanafusa,Hanafusa Ryoga, 花房, 亮雅, Ryoga, シマノ財団奨学生, フジシール財団奨学生,大阪公立大学大学院, 知能情報学, ラフ集合理論, 協調フィルタリング",
   author: "花房亮雅 (Ryoga Hanafusa)",
   url: "https://ryogaio.vercel.app/",
   image: "https://ryoga-hanafusa.vercel.app/images/eyecatch.jpg",
