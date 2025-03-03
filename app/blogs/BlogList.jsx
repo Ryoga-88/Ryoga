@@ -43,7 +43,7 @@ export default function BlogList({ posts }) {
       <div>
         {filteredPosts.map((post) => (
           <Link href={`/blogs/${post.slug}`} key={post.slug} className="block">
-            <div className="w-full border-b border-slate-300 px-6 py-4 flex justify-start items-center space-x-4 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300 cursor-pointer dark:bg-black">
+            <div className="bg-white dark:bg-black w-full border-b border-slate-300 px-6 py-4 flex justify-start items-center space-x-4 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300 cursor-pointer">
               <div className="text-5xl p-4 bg-slate-100 dark:bg-slate-500 rounded-lg w-20 h-20 flex items-center justify-center">
                 {categoryEmojis[post.category] || "📄"}
               </div>
