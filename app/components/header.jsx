@@ -6,7 +6,15 @@ import Nav from "./nav";
 import { usePathname } from "next/navigation";
 import blogs from "app/contents/blogs";
 
-function Header({ isOpen, setIsOpen, isDarkMode, toggleDarkMode }) {
+function Header({
+  isOpen,
+  setIsOpen,
+  isDarkMode,
+  toggleDarkMode,
+  isMobile,
+  showFish,
+  setShowFish,
+}) {
   const pathname = usePathname();
   const [blogsData, setBlogsData] = useState([]);
   const [scrolled, setScrolled] = useState(false);
@@ -58,7 +66,7 @@ function Header({ isOpen, setIsOpen, isDarkMode, toggleDarkMode }) {
   return (
     <header className="relative py-6 bg-white dark:bg-black w-full ">
       <div
-        className={`fixed top-0 left-0 w-full bg-white dark:bg-black border-b dark:border-b-white transition-opacity duration-300 z-50 ${
+        className={`fixed top-0 left-0 w-full bg-white dark:bg-black border-b dark:border-b-white transition-opacity duration-300 z-30 ${
           scrolled ? "opacity-95" : "opacity-100"
         }
         }`}
@@ -71,13 +79,16 @@ function Header({ isOpen, setIsOpen, isDarkMode, toggleDarkMode }) {
               setIsOpen={setIsOpen}
               isDarkMode={isDarkMode}
               toggleDarkMode={toggleDarkMode}
+              isMobile={isMobile}
+              showFish={showFish}
+              setShowFish={setShowFish}
             />
           </div>
         </div>
       </div>
 
       <div className="pt-24">
-        <div className="py-10 text-2xl font-bold text-center dark:text-white">
+        <div className="py-10 text-2xl font-bold text-center dark:text-white z-10">
           {title}
           {date && <div className="text-sm text-gray-500">{date}</div>}
         </div>

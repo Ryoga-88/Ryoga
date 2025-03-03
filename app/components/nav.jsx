@@ -3,7 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function Nav({ isOpen, setIsOpen, isDarkMode, toggleDarkMode }) {
+export default function Nav({
+  isOpen,
+  setIsOpen,
+  isDarkMode,
+  toggleDarkMode,
+  isMobile,
+  showFish,
+  setShowFish,
+}) {
   const pathname = usePathname();
 
   const navItems = [
@@ -16,10 +24,15 @@ export default function Nav({ isOpen, setIsOpen, isDarkMode, toggleDarkMode }) {
     setIsOpen(!isOpen);
   };
 
+  const toggleFishVisibility = () => {
+    const newShowFish = !showFish;
+    setShowFish(newShowFish);
+  };
+
   return (
     <>
       {/* スマホサイズのメニューアイコン */}
-      <div>
+      <div className="flex items-center">
         <button
           onClick={toggleDarkMode}
           className="md:hidden px-4 py-4 z-50 text-neutral-400 dark:text-white hover:text-neutral-600 dark:hover:text-neutral-200 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-md transition-colors"
@@ -65,7 +78,7 @@ export default function Nav({ isOpen, setIsOpen, isDarkMode, toggleDarkMode }) {
         <button onClick={handleMenuOpen} className="z-50 md:hidden px-4 py-4">
           {isOpen ? (
             <svg
-              className="icon text-neutral-400 dark:text-white hover:text-neutral-600 dark:hover:text-neutral-200"
+              className="icon text-neutral-400 dark:text-white hover:text-neutral-600 dark:hover:text-neutral-200 z-100"
               width="18"
               viewBox="0 0 24 24"
               fill="currentColor"
@@ -80,7 +93,7 @@ export default function Nav({ isOpen, setIsOpen, isDarkMode, toggleDarkMode }) {
             </svg>
           ) : (
             <svg
-              className="icon text-neutral-400 dark:text-white hover:text-neutral-600 dark:hover:text-neutral-200"
+              className="icon text-neutral-400 dark:text-white hover:text-neutral-600 dark:hover:text-neutral-200 z-100"
               width="18"
               viewBox="0 0 24 24"
               fill="none"
@@ -108,7 +121,7 @@ export default function Nav({ isOpen, setIsOpen, isDarkMode, toggleDarkMode }) {
             <li key={item.href}>
               <Link
                 href={item.href}
-                className={`text-neutral-400 dark:text-white hover:text-neutral-600 dark:hover:text-neutral-200 ${
+                className={`text-neutral-400 dark:text-white hover:text-neutral-600 dark:hover:text-neutral-200 z-10 ${
                   item.href === pathname ? "underline" : ""
                 }`}
                 onClick={handleMenuOpen}
@@ -121,66 +134,109 @@ export default function Nav({ isOpen, setIsOpen, isDarkMode, toggleDarkMode }) {
       </div>
 
       {/* デスクトップサイズのナビゲーションリンク */}
-      <div className="hidden md:flex space-x-12 text-neutral-400 dark:text-white items-center">
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`hover:text-neutral-600 dark:hover:text-neutral-200 ${
-              (
-                item.href === "/"
-                  ? pathname === "/"
-                  : pathname.startsWith(item.href)
-              )
-                ? "underline"
-                : ""
-            }`}
+      <div className="hidden md:flex text-neutral-400 dark:text-white items-center">
+        {/* ナビゲーションリンク部分 */}
+        <div className="flex space-x-12 mx-8">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`hover:text-neutral-600 dark:hover:text-neutral-200 z-10 ${
+                (
+                  item.href === "/"
+                    ? pathname === "/"
+                    : pathname.startsWith(item.href)
+                )
+                  ? "underline"
+                  : ""
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+        {/* 右側のボタン部分 */}
+        <div className="flex space-x-1">
+          <button
+            onClick={toggleDarkMode}
+            className="px-5 py-4 text-neutral-400 dark:text-white hover:text-neutral-600 dark:hover:text-neutral-200 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-md transition-colors"
           >
-            {item.label}
-          </Link>
-        ))}
-        <button
-          onClick={toggleDarkMode}
-          className="px-4 py-4 text-neutral-400 dark:text-white hover:text-neutral-600 dark:hover:text-neutral-200 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-md transition-colors"
-        >
-          {isDarkMode ? (
+            {isDarkMode ? (
+              <svg
+                stroke="currentColor"
+                fill="none"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                height="1em"
+                width="1em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2"></path>
+                <path d="M12 20v2"></path>
+                <path d="m4.93 4.93 1.41 1.41"></path>
+                <path d="m17.66 17.66 1.41 1.41"></path>
+                <path d="M2 12h2"></path>
+                <path d="M20 12h2"></path>
+                <path d="m6.34 17.66-1.41 1.41"></path>
+                <path d="m19.07 4.93-1.41 1.41"></path>
+              </svg>
+            ) : (
+              <svg
+                stroke="currentColor"
+                fill="none"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                height="1em"
+                width="1em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+              </svg>
+            )}
+          </button>
+          <button
+            onClick={toggleFishVisibility}
+            disabled={isMobile}
+            className="px-4 py-4 text-neutral-400 dark:text-white hover:text-neutral-600 dark:hover:text-neutral-200 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-md transition-colors"
+          >
             <svg
-              stroke="currentColor"
-              fill="none"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              height="1em"
-              width="1em"
+              width="24"
+              height="24"
+              viewBox="-3 -4 6 8"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <circle cx="12" cy="12" r="4"></circle>
-              <path d="M12 2v2"></path>
-              <path d="M12 20v2"></path>
-              <path d="m4.93 4.93 1.41 1.41"></path>
-              <path d="m17.66 17.66 1.41 1.41"></path>
-              <path d="M2 12h2"></path>
-              <path d="M20 12h2"></path>
-              <path d="m6.34 17.66-1.41 1.41"></path>
-              <path d="m19.07 4.93-1.41 1.41"></path>
+              <g transform="rotate(-90)">
+                <path
+                  d="M0,-3 C2,-2 2,2 0,3 C-2,2 -2,-2 0,-3"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="0.4"
+                />
+                <line
+                  x1="0"
+                  y1="3"
+                  x2="-1"
+                  y2="4"
+                  stroke="currentColor"
+                  strokeWidth="0.4"
+                />
+                <line
+                  x1="0"
+                  y1="3"
+                  x2="1"
+                  y2="4"
+                  stroke="currentColor"
+                  strokeWidth="0.4"
+                />
+              </g>
             </svg>
-          ) : (
-            <svg
-              stroke="currentColor"
-              fill="none"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              height="1em"
-              width="1em"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
-            </svg>
-          )}
-        </button>
+          </button>
+        </div>
       </div>
     </>
   );
