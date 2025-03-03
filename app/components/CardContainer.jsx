@@ -5,7 +5,10 @@ import cardsData from "app/contents/projects/projects";
 
 export default function CardContainer() {
   return (
-    <div className="flex flex-col items-center p-4 space-y-6 ">
+    <div
+      className="flex flex-col items-center p-4 space-y-6 "
+      style={{ position: "relative", zIndex: 10 }}
+    >
       {cardsData.map((card, index) => (
         <Card
           key={index}
