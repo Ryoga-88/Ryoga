@@ -107,7 +107,7 @@ export default function Home() {
               <CiCircleCheck className="mr-2" />
               開発言語
             </div>
-            <div className="py-2">
+            <div className="py-2 bg-white dark:bg-black">
               {/* Javascript */}
               <div className="w-full border border-slate-300 px-8 py-4 flex md:justify-start justify-center items-center flex-wrap space-x-8 hover:border-slate-400 transition-all duration-300 cursor-pointer">
                 {/* Language logo */}
@@ -133,7 +133,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="py-2">
+            <div className="py-2 bg-white dark:bg-black">
               {/* Python */}
               <div className="w-full border border-slate-300 px-8 py-4 flex md:justify-start justify-center items-center flex-wrap space-x-8 hover:border-slate-400 transition-all duration-300 cursor-pointer">
                 {/* Language logo */}
@@ -162,7 +162,7 @@ export default function Home() {
               <CiCircleCheck className="mr-2" />
               フレームワーク
             </div>
-            <div className="py-2">
+            <div className="py-2 bg-white dark:bg-black">
               {/* Next.js */}
               <div className="w-full border border-slate-300 px-8 py-4 flex md:justify-start justify-center items-center flex-wrap space-x-8 hover:border-slate-400 transition-all duration-300 cursor-pointer">
                 {/* Language logo */}
@@ -186,7 +186,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="py-2">
+            <div className="py-2 bg-white dark:bg-black">
               {/* Flutter */}
               <div className="w-full border border-slate-300 px-8 py-4 flex md:justify-start justify-center items-center flex-wrap space-x-8 hover:border-slate-400 transition-all duration-300 cursor-pointer">
                 {/* 言語のロゴ */}
@@ -212,7 +212,7 @@ export default function Home() {
               <CiCircleCheck className="mr-2" />
               ライブラリ
             </div>
-            <div className="py-2">
+            <div className="py-2 bg-white dark:bg-black">
               {/* React */}
               <div className="w-full border border-slate-300 px-8 py-4 flex md:justify-start justify-center items-center flex-wrap space-x-8 hover:border-slate-400 transition-all duration-300 cursor-pointer">
                 {/* 言語のロゴ */}
