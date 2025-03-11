@@ -5,8 +5,29 @@ import { SiNextdotjs } from "react-icons/si";
 import { RiTailwindCssFill } from "react-icons/ri";
 import { FaReact } from "react-icons/fa";
 import cardsData from "app/contents/projects/projects";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const [isMobile, setIsMobile] = useState(false);
+  const router = useRouter();
+  useEffect(() => {
+    // 初期表示時にチェック
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpointが768pxと仮定
+    };
+
+    // 初回実行
+    checkIfMobile();
+
+    // リサイズイベントの監視
+    window.addEventListener("resize", checkIfMobile);
+
+    // クリーンアップ関数
+    return () => {
+      window.removeEventListener("resize", checkIfMobile);
+    };
+  }, []);
   return (
     <>
       <div
@@ -44,51 +65,54 @@ export default function Home() {
             </p>
             {cardsData.map((card, index) => {
               return (
-                <div
+                <Link
                   key={index}
-                  className="bg-white rounded-lg shadow-md flex flex-col md:flex-row w-full max-w-3xl md:h-48 dark:bg-black border dark:border-white mb-4"
+                  href={isMobile ? "/projects" : card.link || "#"}
+                  className="block mb-4 transition-transform"
                 >
-                  {/* Image - top for mobile, left for PC */}
-                  <div className="w-full md:w-1/3 h-48 md:h-full">
-                    <img
-                      className="object-cover h-full w-full rounded-t-lg md:rounded-t-none md:rounded-l-lg"
-                      src={card.imageSrc}
-                      alt={card.title}
-                    />
-                  </div>
+                  <div className="bg-white rounded-lg shadow-md flex flex-col md:flex-row w-full max-w-3xl md:h-48 dark:bg-black border dark:border-white cursor-pointer">
+                    {/* Image - top for mobile, left for PC */}
+                    <div className="w-full md:w-1/3 h-48 md:h-full">
+                      <img
+                        className="object-cover h-full w-full rounded-t-lg md:rounded-t-none md:rounded-l-lg"
+                        src={card.imageSrc}
+                        alt={card.title}
+                      />
+                    </div>
 
-                  {/* Content - bottom for mobile, right for PC */}
-                  <div className="p-4 flex flex-col justify-between w-full md:w-2/3">
-                    {/* Title */}
-                    <h2 className="text-xl font-bold text-gray-900 mb-1 dark:text-white">
-                      {card.title}
-                    </h2>
+                    {/* Content - bottom for mobile, right for PC */}
+                    <div className="p-4 flex flex-col justify-between w-full md:w-2/3">
+                      {/* Title */}
+                      <h2 className="text-xl font-bold text-gray-900 mb-1 dark:text-white">
+                        {card.title}
+                      </h2>
 
-                    {/* Description - full for PC, conditional for mobile */}
-                    <div className="overflow-y-auto flex-grow mb-2 pr-1">
-                      {/* PC display (md and up) */}
-                      <p className="hidden md:block text-gray-700 dark:text-white">
-                        {card.description}
-                      </p>
+                      {/* Description - full for PC, conditional for mobile */}
+                      <div className="overflow-y-auto flex-grow mb-2 pr-1">
+                        {/* PC display (md and up) */}
+                        <p className="hidden md:block text-gray-700 dark:text-white">
+                          {card.description}
+                        </p>
 
-                      {/* Mobile display (below md) */}
-                      <div className="block md:hidden">
-                        <p className="text-gray-700 dark:text-white">
-                          {card.description.length > 50
-                            ? `${card.description.slice(0, 50)}...`
-                            : card.description}
+                        {/* Mobile display (below md) */}
+                        <div className="block md:hidden">
+                          <p className="text-gray-700 dark:text-white">
+                            {card.description.length > 50
+                              ? `${card.description.slice(0, 50)}...`
+                              : card.description}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Date info */}
+                      <div className="text-sm mt-auto">
+                        <p className="text-gray-600 dark:text-white">
+                          {card.date}
                         </p>
                       </div>
                     </div>
-
-                    {/* Date info */}
-                    <div className="text-sm mt-auto">
-                      <p className="text-gray-600 dark:text-white">
-                        {card.date}
-                      </p>
-                    </div>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>

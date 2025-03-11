@@ -16,6 +16,7 @@ export default function CardContainer() {
           title={card.title}
           description={card.description}
           date={card.date}
+          link={card.link} // リンク情報を渡す
         />
       ))}
     </div>
