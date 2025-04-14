@@ -156,6 +156,28 @@ export default function Home() {
                 </div>
               </div>
             </div>
+            <div className="py-2 bg-white dark:bg-black">
+              {/* Javascript */}
+              <div className="w-full border border-slate-300 px-8 py-4 flex md:justify-start justify-center items-center flex-wrap space-x-8 hover:border-slate-400 transition-all duration-300 cursor-pointer">
+                {/* Language logo */}
+                <img src="/images/typescript.png" className="max-w-16" />
+                {/* Skill description */}
+                <div className="my-2">
+                  <h3 className="font-bold dark:text-white">TypeScript</h3>
+                  <div className="flex flex-wrap w-full justify-start space-x-1 ">
+                    <div className="inline-flex items-center rounded-md bg-gray-50 dark:bg-slate-600 px-2 py-1 text-xs font-medium text-gray-600 dark:text-white ring-1 ring-inset ring-gray-500/10">
+                      フロントエンド開発
+                    </div>
+                    <div className="inline-flex items-center rounded-md bg-gray-50 dark:bg-slate-600 px-2 py-1 text-xs font-medium text-gray-600 dark:text-white ring-1 ring-inset ring-gray-500/10">
+                      Web開発
+                    </div>
+                  </div>
+                  <p className="dark:text-white">
+                    Typescriptエンジニア。最近はよく使うことが多いです。
+                  </p>
+                </div>
+              </div>
+            </div>
 
             <div className="py-2 bg-white dark:bg-black">
               {/* Python */}

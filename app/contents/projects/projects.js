@@ -1,6 +1,6 @@
 const cardsData = [
   {
-    imageSrc: "/images/classnotebook.jpg",
+    imageSrc: "/images/nublaai.png",
     title: "NebulaAI",
     description:
       "洗練されたデザインのAIチャットです。gpt-4-turbo,gpt-4,gpt-4o-mini-ttsを使用しており、言語生成と音声合成機能も搭載しています。",
