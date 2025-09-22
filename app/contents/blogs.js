@@ -6,25 +6,28 @@ module.exports = [
     "category": "note",
     "keywords": [
       "テスト"
-    ]
+    ],
+    "externalUrl": "https://note.com/your-account/n/helloworld"
   },
   {
     "slug": "hello!!!!",
     "date": "2024-10-08",
     "title": "ブログです！",
-    "category": "test",
+    "category": "technology",
     "keywords": [
       "テスト"
-    ]
+    ],
+    "externalUrl": "https://zenn.dev/your-account/articles/hello"
   },
   {
     "slug": "test",
     "date": "2024-10-08",
     "title": "テストをしてみます。",
-    "category": "mock",
+    "category": "research",
     "keywords": [
       "テスト",
       "ブログ"
-    ]
+    ],
+    "externalUrl": "https://note.com/your-account/n/testing"
   }
 ];

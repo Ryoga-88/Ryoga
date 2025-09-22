@@ -47,15 +47,15 @@ function Header({
 
     switch (pathname) {
       case "/":
-        return { title: "花房 亮雅 | Ryoga Hanafusa", date: "" };
+        return { title: "Ryoga Hanafusa", date: "" };
       case "/projects":
-        return { title: "プロジェクト一覧", date: "" };
+        return { title: "Projects", date: "" };
       case "/photos":
-        return { title: "写真ギャラリー", date: "" };
+        return { title: "Photos", date: "" };
       case "/blogs":
-        return { title: "ブログ", date: "" };
+        return { title: "Blogs", date: "" };
       case "/privacy":
-        return { title: "プライバシーポリシー", date: "" };
+        return { title: "Privacy", date: "" };
       default:
         return { title: "Ryoga Hanafusa", date: "" };
     }
@@ -88,9 +88,11 @@ function Header({
       </div>
 
       <div className="pt-24">
-        <div className="py-10 text-2xl font-bold text-center dark:text-white z-10">
-          {title}
-          {date && <div className="text-sm text-gray-500">{date}</div>}
+        <div className="py-10 text-center z-10">
+          <div className="text-4xl font-medium dark:text-white inline-block">
+            {title}
+          </div>
+          {date && <div className="text-sm text-gray-500 mt-2">{date}</div>}
         </div>
       </div>
     </header>

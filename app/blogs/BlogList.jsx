@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
+import React from "react";
+import Image from "next/image";
 import { useCategory } from "app/components/category";
+import Link from "next/link";
 
 export default function BlogList({ posts }) {
   const {
@@ -35,17 +36,20 @@ export default function BlogList({ posts }) {
               selectedCategory === category ? "underline" : ""
             }`}
           >
-            {categoryEmojis[category] || "📚"} {category} (
-            {categoryCounts[category]})
+            <span className="inline-flex items-center space-x-1">
+              <CategoryTwemoji category={category} size={20} />
+              <span>{category}</span>
+              <span>({categoryCounts[category]})</span>
+            </span>
           </button>
         ))}
       </div>
       <div>
         {filteredPosts.map((post) => (
-          <Link href={`/blogs/${post.slug}`} key={post.slug} className="block">
+          <PostLink key={post.slug} post={post}>
             <div className="bg-white dark:bg-black w-full border-b border-slate-300 px-6 py-4 flex justify-start items-center space-x-4 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300 cursor-pointer">
-              <div className="text-5xl p-4 bg-slate-100 dark:bg-slate-500 rounded-lg w-20 h-20 flex items-center justify-center">
-                {categoryEmojis[post.category] || "📄"}
+              <div className="text-5xl p-4 bg-slate-100 dark:bg-white rounded-lg w-20 h-20 flex items-center justify-center">
+                <CategoryTwemoji category={post.category} size={56} />
               </div>
               {/* 記載 */}
               <div className="my-2 dark:text-white">
@@ -63,15 +67,68 @@ export default function BlogList({ posts }) {
                 <div className="text-md font-semibold">{post.title}</div>
               </div>
             </div>
-          </Link>
+          </PostLink>
         ))}
       </div>
     </div>
   );
 }
 
-const categoryEmojis = {
-  note: "📄",
-  test: "💡",
-  mock: "🔍",
+const categoryIcons = {
+  note: {
+    src: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4dd.svg",
+    alt: "ノートカテゴリ",
+  },
+  technology: {
+    src: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4bb.svg",
+    alt: "テクノロジーカテゴリ",
+  },
+  research: {
+    src: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f52c.svg",
+    alt: "リサーチカテゴリ",
+  },
+  other: {
+    src: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2728.svg",
+    alt: "その他カテゴリ",
+  },
+  default: {
+    src: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4d6.svg",
+    alt: "ブログカテゴリ",
+  },
 };
+
+function CategoryTwemoji({ category, size = 24 }) {
+  const icon = categoryIcons[category] || categoryIcons.default;
+
+  return (
+    <Image
+      src={icon.src}
+      alt={icon.alt}
+      width={size}
+      height={size}
+      className="inline-block"
+      style={{ width: size, height: size }}
+    />
+  );
+}
+
+function PostLink({ post, children }) {
+  if (post.externalUrl) {
+    return (
+      <a
+        href={post.externalUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block"
+      >
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <Link href={`/blogs/${post.slug}`} className="block">
+      {children}
+    </Link>
+  );
+}

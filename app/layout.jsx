@@ -6,6 +6,14 @@ import Header from "./components/header";
 import Footer from "./components/footer";
 import React, { useRef, useState, useEffect } from "react";
 import Head from "next/head";
+import { Open_Sans } from "next/font/google";
+
+const openSans = Open_Sans({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  display: "swap",
+  variable: "--font-open-sans",
+});
 
 export default function RootLayout({ children }) {
   const [isopen, setIsOpen] = useState(false);
@@ -551,7 +559,10 @@ export default function RootLayout({ children }) {
   };
 
   return (
-    <html lang="ja" className={isDarkMode ? "dark" : ""}>
+    <html
+      lang="ja"
+      className={`${openSans.variable} ${isDarkMode ? "dark" : ""}`}
+    >
       <head>
         {/* 基本的なSEOメタタグ */}
         <meta charSet="utf-8" />

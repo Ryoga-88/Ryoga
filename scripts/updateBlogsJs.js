@@ -28,6 +28,7 @@ function updateBlogsJs() {
           title: data.title,
           category: data.category,
           keywords: data.keywords || [],
+          externalUrl: data.externalUrl || null,
         };
       });
 

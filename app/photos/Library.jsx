@@ -154,4 +154,11 @@ const categoryEmojis = {
       className="inline-block w-4 h-4 mr-1"
     />
   ),
+  Italy: (
+    <img
+      src="/images/Italy-flag.svg"
+      alt="Italy Flag"
+      className="inline-block w-4 h-4 mr-1"
+    />
+  ),
 };

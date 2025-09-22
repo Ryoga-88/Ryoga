@@ -1,7 +1,7 @@
 export default function Privacy() {
   return (
     <div
-      className="container mx-auto max-w-3xl my-36 text-lg px-10"
+      className="container mx-auto max-w-3xl text-lg px-10"
       style={{ position: "relative", zIndex: 10 }}
     >
       <div className="w-full md:justify-start">

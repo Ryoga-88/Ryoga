@@ -35,18 +35,18 @@ export default function Home() {
         style={{ position: "relative", zIndex: 10 }}
       >
         <div className="w-full md:justify-start">
-          <div className="flex flex-wrap md:flex-nowrap justify-center py-8 items-center mx-4 ">
+          <div className="flex flex-wrap md:flex-nowrap justify-center items-center mx-4 ">
             <div>
               <img
                 src={`/images/eyecatch.jpg`}
                 alt="human"
-                className="max-w-36 h-auto rounded-full aspect-square object-cover mr-7"
+                className="max-w-36 h-auto rounded-lg aspect-square object-cover mr-7 border-2 border-gray-50"
               />
             </div>
             <div>
               <h1 className="text-base text-left dark:text-white mt-6 md:mt-0">
-                大阪公立大学大学院
-                知能情報学分野専攻．第八期公益財団法人シマノ財団奨学生，2023年度・2024年度フジシール財団奨学生．現在はラフ集合理論に基づくクラスタリングベースの協調フィルタリングに関する研究に取り組んでいます．大学ではC言語，JavaScript，JavaやPythonなどを学びました．最近では，大学発ITベンチャー株式会社Affectifyの社員として積極的に新しい技術に触れ，知識やスキルを身につけられるよう日々励んでいます．新しい技術や製品に触れたり学ぶことを愛しています．
+                花房 亮雅．大阪公立大学大学院
+                知能情報学分野専攻．株式会社Affectify社員．第八期公益財団法人シマノ財団奨学生，2023年度・2024年度・2025年度・2026年度フジシール財団奨学生．現在はラフ集合理論に基づくクラスタリングベースの協調フィルタリングに関する研究に取り組んでいます．大学ではC言語，JavaScript，JavaやPythonなどを学びました．新しい技術や製品に触れたり学ぶことを愛しています．
               </h1>
 
               {/* Fish toggle button */}

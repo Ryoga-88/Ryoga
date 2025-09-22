@@ -2,7 +2,7 @@
 title: "ブログ始めました。"
 category: "note"
 keywords: ["テスト"]
-description: "個人サイトでブログを作成してみました。"
+externalUrl: "https://note.com/your-account/n/helloworld"
 ---
 
 個人サイトを作成したので、ブログをここで公開できるようにしました。
