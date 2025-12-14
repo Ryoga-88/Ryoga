@@ -1,14 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // 多言語対応設定（将来的な拡張用）
-  i18n: {
-    locales: ["ja", "en"],
-    defaultLocale: "ja",
-  },
-
   // 画像最適化設定
   images: {
-    domains: ["cdn.jsdelivr.net"], // 外部画像ドメインの許可（devicon用）
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.jsdelivr.net",
+        port: "",
+        pathname: "/**",
+      },
+    ],
     formats: ["image/webp"], // WebP形式の自動変換を有効化
     minimumCacheTTL: 60, // キャッシュ期間（秒）
   },
@@ -43,8 +44,7 @@ const nextConfig = {
   // 圧縮設定
   compress: true,
 
-  // ビルド出力の最適化
-  swcMinify: true,
+  // ビルド出力の最適化（Next.js 13以降はデフォルトで有効）
 
   // 環境変数の公開設定
   env: {
