@@ -1,33 +1,30 @@
 module.exports = [
   {
-    "slug": "helloworld",
-    "date": "2024-10-07",
-    "title": "ブログ始めました。",
+    "slug": "app",
+    "date": "2025-09-19",
+    "title": "大阪公立大学公式アプリ「OMU+」がついにリリース",
     "category": "note",
     "keywords": [
-      "テスト"
+      "大阪公立大学",
+      "OMU+",
+      "アプリ開発",
+      "スマートユニバーシティ",
+      "Affectify"
     ],
-    "externalUrl": "https://note.com/your-account/n/helloworld"
+    "externalUrl": "https://www.omu.ac.jp/info/news/entry-19680.html"
   },
   {
-    "slug": "hello!!!!",
-    "date": "2024-10-08",
-    "title": "ブログです！",
-    "category": "technology",
-    "keywords": [
-      "テスト"
-    ],
-    "externalUrl": "https://zenn.dev/your-account/articles/hello"
-  },
-  {
-    "slug": "test",
-    "date": "2024-10-08",
-    "title": "テストをしてみます。",
+    "slug": "ijcnn",
+    "date": "2025-11-02",
+    "title": "国際学会で研究発表 - IJCNN 2025 イタリア参加記",
     "category": "research",
     "keywords": [
-      "テスト",
-      "ブログ"
+      "IJCNN",
+      "国際学会",
+      "イタリア",
+      "ニューラルネットワーク",
+      "研究発表"
     ],
-    "externalUrl": "https://note.com/your-account/n/testing"
+    "externalUrl": "https://note.com/ryoga_hanafusa/n/nf9bd90c8f8ac"
   }
 ];
