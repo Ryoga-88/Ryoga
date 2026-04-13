@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "npm run update:blogs && next dev",
     "update:blogs": "node scripts/updateBlogsJs.js",
+    "upload:photos": "node scripts/uploadPhotos.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
