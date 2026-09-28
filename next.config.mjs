@@ -1,55 +1,26 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // 画像最適化設定
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "cdn.jsdelivr.net",
-        port: "",
-        pathname: "/**",
-      },
-    ],
-    formats: ["image/webp"], // WebP形式の自動変換を有効化
-    minimumCacheTTL: 60, // キャッシュ期間（秒）
+    formats: ["image/avif", "image/webp"],
   },
 
-  // ヘッダー設定（キャッシュなど）
+  // HTML and /_next/static keep Next's own Cache-Control (a global override
+  // here used to let browsers keep stale HTML for an hour after deploys).
   async headers() {
     return [
       {
-        source: "/(.*)",
+        source: "/:path*",
         headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=3600, s-maxage=86400",
-          },
-          {
-            key: "X-Content-Type-Options",
-            value: "nosniff",
-          },
-          {
-            key: "X-Frame-Options",
-            value: "DENY",
-          },
-          {
-            key: "X-XSS-Protection",
-            value: "1; mode=block",
-          },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
         ],
       },
+      {
+        source: "/images/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=86400" }],
+      },
     ];
-  },
-
-  // 圧縮設定
-  compress: true,
-
-  // ビルド出力の最適化（Next.js 13以降はデフォルトで有効）
-
-  // 環境変数の公開設定
-  env: {
-    SITE_URL: "https://ryogaio.vercel.app/",
-    SITE_NAME: "花房亮雅 | ポートフォリオ",
   },
 };
 

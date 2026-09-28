@@ -1,290 +1,104 @@
-"use client";
-import { useEffect, useRef, useState } from "react";
-import { CiCircleCheck } from "react-icons/ci";
-import { SiNextdotjs } from "react-icons/si";
-import { RiTailwindCssFill } from "react-icons/ri";
-import { FaReact } from "react-icons/fa";
-import cardsData from "app/contents/projects/projects";
+import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import JsonLd from "app/components/json-ld";
+import PostCard from "app/components/post-card";
+import ProjectCard from "app/components/project-card";
+import Skills from "app/components/skills";
+import projects from "app/contents/projects/projects";
+import { getAllPosts } from "app/lib/posts";
+import { PERSON_ID, SITE, absoluteUrl, pageMetadata } from "app/lib/site";
+import avatar from "public/images/eyecatch.jpg";
 
-export default function Home() {
-  const [isMobile, setIsMobile] = useState(false);
-  const router = useRouter();
-  useEffect(() => {
-    // 初期表示時にチェック
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 768); // md breakpointが768pxと仮定
-    };
+// New note posts appear without a redeploy.
+export const revalidate = 3600;
 
-    // 初回実行
-    checkIfMobile();
+export const metadata = pageMetadata({ path: "/" });
 
-    // リサイズイベントの監視
-    window.addEventListener("resize", checkIfMobile);
-
-    // クリーンアップ関数
-    return () => {
-      window.removeEventListener("resize", checkIfMobile);
-    };
-  }, []);
+function Section({ id, title, more, children }) {
   return (
-    <>
-      <div
-        className="container mx-auto max-w-3xl"
-        style={{ position: "relative", zIndex: 10 }}
-      >
-        <div className="w-full md:justify-start">
-          <div className="flex flex-wrap md:flex-nowrap justify-center items-center mx-4 ">
-            <div>
-              <img
-                src={`/images/eyecatch.jpg`}
-                alt="human"
-                className="max-w-36 h-auto rounded-lg aspect-square object-cover mr-7 border-2 border-gray-50"
-              />
-            </div>
-            <div>
-              <h1 className="text-base text-left dark:text-white mt-6 md:mt-0">
-                花房 亮雅．大阪公立大学大学院
-                知能情報学分野専攻．株式会社Affectify社員．第八期公益財団法人シマノ財団奨学生，2023年度・2024年度・2025年度・2026年度フジシール財団奨学生．現在はラフ集合理論に基づくクラスタリングベースの協調フィルタリングに関する研究に取り組んでいます．大学ではC言語，JavaScript，JavaやPythonなどを学びました．新しい技術や製品に触れたり学ぶことを愛しています．
-              </h1>
-
-              {/* Fish toggle button */}
-            </div>
-          </div>
-        </div>
-
-        {/* Portfolio */}
-        <section className="w-full mt-12">
-          <div className="mx-4">
-            <h2 className="font-bold text-lg dark:text-white">
-              私のポートフォリオ
-            </h2>
-            <p className="mb-5 dark:text-white">
-              私が作ってきたポートフォリオはこちら
-            </p>
-            {cardsData.map((card, index) => {
-              return (
-                <Link
-                  key={index}
-                  href={isMobile ? "/projects" : card.link || "#"}
-                  className="block mb-4 transition-transform"
-                >
-                  <div className="bg-white rounded-lg shadow-md flex flex-col md:flex-row w-full max-w-3xl md:h-48 dark:bg-black border dark:border-white cursor-pointer">
-                    {/* Image - top for mobile, left for PC */}
-                    <div className="w-full md:w-1/3 h-48 md:h-full">
-                      <img
-                        className="object-cover h-full w-full rounded-t-lg md:rounded-t-none md:rounded-l-lg"
-                        src={card.imageSrc}
-                        alt={card.title}
-                      />
-                    </div>
-
-                    {/* Content - bottom for mobile, right for PC */}
-                    <div className="p-4 flex flex-col justify-between w-full md:w-2/3">
-                      {/* Title */}
-                      <h2 className="text-xl font-bold text-gray-900 mb-1 dark:text-white">
-                        {card.title}
-                      </h2>
-
-                      {/* Description - full for PC, conditional for mobile */}
-                      <div className="overflow-y-auto flex-grow mb-2 pr-1">
-                        {/* PC display (md and up) */}
-                        <p className="hidden md:block text-gray-700 dark:text-white">
-                          {card.description}
-                        </p>
-
-                        {/* Mobile display (below md) */}
-                        <div className="block md:hidden">
-                          <p className="text-gray-700 dark:text-white">
-                            {card.description.length > 50
-                              ? `${card.description.slice(0, 50)}...`
-                              : card.description}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Date info */}
-                      <div className="text-sm mt-auto">
-                        <p className="text-gray-600 dark:text-white">
-                          {card.date}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Skills stack */}
-        <section className="w-full mt-24">
-          <div className="mx-4">
-            <h2 className="font-bold text-lg dark:text-white">
-              スキルスタック
-            </h2>
-            <p className="mb-5 dark:text-white">
-              私が主に取り扱っている技術スタックです。
-            </p>
-            <div className="inline-flex items-center rounded-md bg-black dark:bg-white text-white dark:text-black px-4 py-2 text-xs font-bold ring-1 ring-inset ring-gray-500/10">
-              <CiCircleCheck className="mr-2" />
-              開発言語
-            </div>
-            <div className="py-2 bg-white dark:bg-black">
-              {/* Javascript */}
-              <div className="w-full border border-slate-300 px-8 py-4 flex md:justify-start justify-center items-center flex-wrap space-x-8 hover:border-slate-400 transition-all duration-300 cursor-pointer">
-                {/* Language logo */}
-                <img
-                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg"
-                  className="max-w-16"
-                />
-                {/* Skill description */}
-                <div className="my-2">
-                  <h3 className="font-bold dark:text-white">JavaScript</h3>
-                  <div className="flex flex-wrap w-full justify-start space-x-1 ">
-                    <div className="inline-flex items-center rounded-md bg-gray-50 dark:bg-slate-600 px-2 py-1 text-xs font-medium text-gray-600 dark:text-white ring-1 ring-inset ring-gray-500/10">
-                      フロントエンド開発
-                    </div>
-                    <div className="inline-flex items-center rounded-md bg-gray-50 dark:bg-slate-600 px-2 py-1 text-xs font-medium text-gray-600 dark:text-white ring-1 ring-inset ring-gray-500/10">
-                      Web開発
-                    </div>
-                  </div>
-                  <p className="dark:text-white">
-                    Javascriptエンジニア。普段はReactを使って開発現場で働いています。
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="py-2 bg-white dark:bg-black">
-              {/* Javascript */}
-              <div className="w-full border border-slate-300 px-8 py-4 flex md:justify-start justify-center items-center flex-wrap space-x-8 hover:border-slate-400 transition-all duration-300 cursor-pointer">
-                {/* Language logo */}
-                <img src="/images/typescript.png" className="max-w-16" />
-                {/* Skill description */}
-                <div className="my-2">
-                  <h3 className="font-bold dark:text-white">TypeScript</h3>
-                  <div className="flex flex-wrap w-full justify-start space-x-1 ">
-                    <div className="inline-flex items-center rounded-md bg-gray-50 dark:bg-slate-600 px-2 py-1 text-xs font-medium text-gray-600 dark:text-white ring-1 ring-inset ring-gray-500/10">
-                      フロントエンド開発
-                    </div>
-                    <div className="inline-flex items-center rounded-md bg-gray-50 dark:bg-slate-600 px-2 py-1 text-xs font-medium text-gray-600 dark:text-white ring-1 ring-inset ring-gray-500/10">
-                      Web開発
-                    </div>
-                  </div>
-                  <p className="dark:text-white">
-                    Typescriptエンジニア。最近はよく使うことが多いです。
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="py-2 bg-white dark:bg-black">
-              {/* Python */}
-              <div className="w-full border border-slate-300 px-8 py-4 flex md:justify-start justify-center items-center flex-wrap space-x-8 hover:border-slate-400 transition-all duration-300 cursor-pointer">
-                {/* Language logo */}
-                <img
-                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg"
-                  className="max-w-20"
-                />
-                {/* Skill description */}
-                <div className="my-2">
-                  <h3 className="font-bold dark:text-white">Python</h3>
-                  <div className="felx flex-wrap w-full justify-center space-x-1 ">
-                    <div className="inline-flex items-center rounded-md bg-gray-50 dark:bg-slate-600 px-2 py-1 text-xs font-medium text-gray-600 dark:text-white ring-1 ring-inset ring-gray-500/10">
-                      データ分析
-                    </div>
-                    <div className="inline-flex items-center rounded-md bg-gray-50 dark:bg-slate-600 px-2 py-1 text-xs font-medium text-gray-600 dark:text-white ring-1 ring-inset ring-gray-500/10">
-                      研究開発
-                    </div>
-                  </div>
-                  <p className="dark:text-white">
-                    大学の研究開発(データ分析)で使用しています。
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="inline-flex items-center rounded-md bg-theme dark:bg-white text-white dark:text-black px-4 py-2 text-xs font-bold ring-1 ring-inset ring-gray-500/10">
-              <CiCircleCheck className="mr-2" />
-              フレームワーク
-            </div>
-            <div className="py-2 bg-white dark:bg-black">
-              {/* Next.js */}
-              <div className="w-full border border-slate-300 px-8 py-4 flex md:justify-start justify-center items-center flex-wrap space-x-8 hover:border-slate-400 transition-all duration-300 cursor-pointer">
-                {/* Language logo */}
-                <div className="text-7xl bg-white">
-                  <SiNextdotjs />
-                </div>
-                {/* Skill description */}
-                <div className="my-2">
-                  <h3 className="font-bold dark:text-white">Next.js</h3>
-                  <div className="felx flex-wrap w-full justify-center space-x-1 ">
-                    <div className="inline-flex items-center rounded-md bg-gray-50 dark:bg-slate-600 px-2 py-1 text-xs font-medium text-gray-600 dark:text-white ring-1 ring-inset ring-gray-500/10">
-                      フロントエンド開発
-                    </div>
-                    <div className="inline-flex items-center rounded-md bg-gray-50 dark:bg-slate-600 px-2 py-1 text-xs font-medium text-gray-600 dark:text-white ring-1 ring-inset ring-gray-500/10">
-                      バックエンド開発
-                    </div>
-                  </div>
-                  <p className="dark:text-white">
-                    本サイトを制作するのにも使用しています。
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="py-2 bg-white dark:bg-black">
-              {/* Flutter */}
-              <div className="w-full border border-slate-300 px-8 py-4 flex md:justify-start justify-center items-center flex-wrap space-x-8 hover:border-slate-400 transition-all duration-300 cursor-pointer">
-                {/* 言語のロゴ */}
-                <img
-                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg"
-                  className="max-w-16"
-                />
-                {/* スキルの説明 */}
-                <div className="my-2">
-                  <h3 className="font-bold dark:text-white">Flutter</h3>
-                  <div className="felx flex-wrap w-full justify-center space-x-1 ">
-                    <div className="inline-flex items-center rounded-md bg-gray-50 dark:bg-slate-600 px-2 py-1 text-xs font-medium text-gray-600 dark:text-white ring-1 ring-inset ring-gray-500/10">
-                      クロスプラットフォームアプリ開発
-                    </div>
-                  </div>
-                  <p className="dark:text-white">
-                    大学公式アプリ開発に携わった際に使用しました。
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="inline-flex items-center rounded-md  bg-theme dark:bg-white text-white dark:text-black px-4 py-2 text-xs font-bold ring-1 ring-inset ring-gray-500/10">
-              <CiCircleCheck className="mr-2" />
-              ライブラリ
-            </div>
-            <div className="py-2 bg-white dark:bg-black">
-              {/* React */}
-              <div className="w-full border border-slate-300 px-8 py-4 flex md:justify-start justify-center items-center flex-wrap space-x-8 hover:border-slate-400 transition-all duration-300 cursor-pointer">
-                {/* 言語のロゴ */}
-                <div className="text-7xl  text-sky-300">
-                  <FaReact />
-                </div>
-                {/* スキルの説明 */}
-                <div className="my-2">
-                  <h3 className="font-bold dark:text-white">React</h3>
-                  <div className="felx flex-wrap w-full justify-center space-x-1 ">
-                    <div className="inline-flex items-center rounded-md bg-gray-50 dark:bg-slate-600 px-2 py-1 text-xs font-medium text-gray-600 dark:text-white ring-1 ring-inset ring-gray-500/10">
-                      フロントエンド開発
-                    </div>
-                    <div className="inline-flex items-center rounded-md bg-gray-50 dark:bg-slate-600 px-2 py-1 text-xs font-medium text-gray-600 dark:text-white ring-1 ring-inset ring-gray-500/10">
-                      Web開発
-                    </div>
-                  </div>
-                  <p className="dark:text-white">
-                    今、一番使っている言語です。日々、勉強中です。
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+    <section aria-labelledby={id} className="mt-20">
+      <div className="mb-6 flex items-baseline justify-between gap-4">
+        <h2 id={id} className="text-lg font-bold tracking-wider">
+          {title}
+        </h2>
+        {more && (
+          <Link href={more.href} className="text-sm text-muted transition-colors hover:text-ink">
+            {more.label} →
+          </Link>
+        )}
       </div>
-    </>
+      {children}
+    </section>
+  );
+}
+
+export default async function Home() {
+  const posts = (await getAllPosts()).slice(0, 6);
+
+  return (
+    <div className="mx-auto max-w-page px-4 pt-10 sm:pt-14">
+      <section aria-labelledby="profile-name" className="flex flex-col gap-6 sm:flex-row sm:gap-8">
+        <Image
+          src={avatar}
+          alt="花房 亮雅のプロフィール写真"
+          width={112}
+          height={112}
+          preload
+          className="size-24 shrink-0 rounded-squircle object-cover sm:size-28"
+        />
+        <div>
+          <h1 id="profile-name" className="text-[1.6rem] font-bold tracking-wider">
+            花房 亮雅
+          </h1>
+          <p className="mt-0.5 text-sm tracking-widest text-muted">Ryoga Hanafusa</p>
+          <p className="mt-5 leading-[1.95] tracking-[0.03em]">{SITE.bio}</p>
+          <ul className="mt-5 flex flex-wrap gap-2 text-sm">
+            <li>
+              <a href={SITE.sameAs[0]} rel="me noopener" className="inline-block rounded-full bg-soft px-3.5 py-1.5 transition-colors hover:bg-tint">
+                note
+              </a>
+            </li>
+            <li>
+              <a href={SITE.sameAs[1]} rel="me noopener" className="inline-block rounded-full bg-soft px-3.5 py-1.5 transition-colors hover:bg-tint">
+                X {SITE.twitter}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      {posts.length > 0 && (
+        <Section id="blog" title="Blog" more={{ href: "/blogs", label: "すべての記事" }}>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-9 md:grid-cols-3 md:gap-x-6">
+            {posts.map((post) => (
+              <PostCard key={post.href} post={post} />
+            ))}
+          </div>
+        </Section>
+      )}
+
+      <Section id="projects" title="Projects" more={{ href: "/projects", label: "すべての制作物" }}>
+        <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2">
+          {projects.slice(0, 4).map((project) => (
+            <ProjectCard key={project.title} project={project} />
+          ))}
+        </div>
+      </Section>
+
+      <Section id="skills" title="Skills">
+        <Skills />
+      </Section>
+
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "ProfilePage",
+          url: absoluteUrl("/"),
+          name: SITE.title,
+          inLanguage: "ja",
+          mainEntity: { "@id": PERSON_ID },
+        }}
+      />
+    </div>
   );
 }

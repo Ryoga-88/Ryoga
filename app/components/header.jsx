@@ -1,102 +1,116 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Logo from "./logo";
-import Nav from "./nav";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import blogs from "app/contents/blogs";
+import { TbMenu2, TbX } from "react-icons/tb";
+import ThemeToggle from "app/components/theme-toggle";
+import avatar from "public/images/eyecatch.jpg";
 
-function Header({
-  isOpen,
-  setIsOpen,
-  isDarkMode,
-  toggleDarkMode,
-  isMobile,
-  showFish,
-  setShowFish,
-}) {
+const NAV_ITEMS = [
+  { href: "/projects", label: "Projects" },
+  { href: "/photos", label: "Photos" },
+  { href: "/blogs", label: "Blog" },
+];
+
+const linkClass =
+  "rounded-full px-3 py-2 text-[0.95rem] tracking-wide text-muted transition-colors hover:bg-soft hover:text-ink aria-[current=page]:font-bold aria-[current=page]:text-ink";
+const drawerLinkClass =
+  "block rounded-xl px-3 py-3 text-lg tracking-wide text-muted transition-colors hover:bg-soft hover:text-ink aria-[current=page]:font-bold aria-[current=page]:text-ink";
+
+export default function Header() {
   const pathname = usePathname();
-  const [blogsData, setBlogsData] = useState([]);
-  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const isCurrent = (href) => pathname === href || pathname.startsWith(`${href}/`);
 
   useEffect(() => {
-    setBlogsData(blogs);
-  }, [blogsData]);
-
-  // スクロールイベントで透明度を変更する
-  useEffect(() => {
-    const handleScroll = () => {
-      // 非推奨ではなく最新の scrollY を使用
-      setScrolled(window.scrollY > 0);
+    if (!menuOpen) return;
+    const close = () => setMenuOpen(false);
+    const closeOnEscape = (event) => event.key === "Escape" && close();
+    // The drawer only exists below sm; widening the window closes it.
+    const desktop = window.matchMedia("(min-width: 640px)");
+    const root = document.documentElement;
+    root.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+    desktop.addEventListener("change", close);
+    return () => {
+      root.style.overflow = "";
+      window.removeEventListener("keydown", closeOnEscape);
+      desktop.removeEventListener("change", close);
     };
+  }, [menuOpen]);
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const getBlogDetails = () => {
-    if (pathname.startsWith("/blogs/")) {
-      const slug = pathname.split("/blogs/")[1];
-      const blog = blogs.find((blog) => blog.slug === slug);
-      if (blog) {
-        return { title: blog.title, date: blog.date };
-      } else {
-        return { title: slug, date: "" };
-      }
-    }
-
-    switch (pathname) {
-      case "/":
-        return { title: "Ryoga Hanafusa", date: "" };
-      case "/projects":
-        return { title: "Projects", date: "" };
-      case "/photos":
-        return { title: "Photos", date: "" };
-      case "/blogs":
-        return { title: "Blogs", date: "" };
-      case "/privacy":
-        return { title: "Privacy", date: "" };
-      default:
-        return { title: "Ryoga Hanafusa", date: "" };
-    }
-  };
-
-  const { title, date } = getBlogDetails();
+  const navLinks = (className, onNavigate) =>
+    NAV_ITEMS.map(({ href, label }) => (
+      <li key={href}>
+        <Link
+          href={href}
+          aria-current={isCurrent(href) ? "page" : undefined}
+          className={className}
+          onClick={onNavigate}
+        >
+          {label}
+        </Link>
+      </li>
+    ));
 
   return (
-    <header className="relative py-6 bg-white dark:bg-black w-full ">
-      <div
-        className={`fixed top-0 left-0 w-full bg-white dark:bg-black border-b dark:border-b-white transition-opacity duration-300 z-30 ${
-          scrolled ? "opacity-95" : "opacity-100"
-        }
-        }`}
-      >
-        <div className="container mx-auto px-4 md:px-8 lg:px-16">
-          <div className="flex flex-wrap justify-between items-center">
-            <Logo />
-            <Nav
-              isOpen={isOpen}
-              setIsOpen={setIsOpen}
-              isDarkMode={isDarkMode}
-              toggleDarkMode={toggleDarkMode}
-              isMobile={isMobile}
-              showFish={showFish}
-              setShowFish={setShowFish}
-            />
-          </div>
+    <header className="sticky top-0 z-30">
+      {/* The blur sits on its own layer: backdrop-filter on <header> itself
+          would trap the fixed drawer below inside the header's box. */}
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-bg/90 backdrop-blur-md" />
+      {/* Above the drawer, so the theme switch and close button stay usable. */}
+      <div className="relative z-30 mx-auto flex h-16 max-w-page items-center justify-between gap-3 px-4">
+        <Link href="/" className="flex items-center gap-2.5 rounded-lg py-1">
+          <Image
+            src={avatar}
+            alt=""
+            width={32}
+            height={32}
+            className="size-8 rounded-squircle object-cover"
+          />
+          <span className="font-bold tracking-wide">Ryoga Hanafusa</span>
+        </Link>
+
+        <div className="flex items-center gap-1">
+          <nav aria-label="メイン" className="hidden sm:block">
+            <ul className="flex items-center gap-0.5">{navLinks(linkClass)}</ul>
+          </nav>
+          <ThemeToggle className="px-1" />
+          <button
+            type="button"
+            aria-label="メニュー"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav"
+            onClick={() => setMenuOpen((open) => !open)}
+            className="inline-flex size-11 items-center justify-center rounded-full transition-colors hover:bg-soft sm:hidden"
+          >
+            {menuOpen ? <TbX size={22} aria-hidden="true" /> : <TbMenu2 size={22} aria-hidden="true" />}
+          </button>
         </div>
       </div>
 
-      <div className="pt-24">
-        <div className="py-10 text-center z-10">
-          <div className="text-4xl font-medium dark:text-white inline-block">
-            {title}
-          </div>
-          {date && <div className="text-sm text-gray-500 mt-2">{date}</div>}
-        </div>
-      </div>
+      {/* Mobile drawer: slides in from the left over a blurred page. */}
+      <div
+        aria-hidden="true"
+        onClick={() => setMenuOpen(false)}
+        className={`fixed inset-0 z-10 bg-bg/30 backdrop-blur-md transition-opacity duration-500 sm:hidden ${
+          menuOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      />
+      <nav
+        id="mobile-nav"
+        aria-label="メイン"
+        inert={!menuOpen}
+        className={`fixed inset-y-0 left-0 z-20 w-3/4 max-w-xs bg-bg/90 backdrop-blur-md transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] sm:hidden ${
+          menuOpen ? "translate-x-0 shadow-xl" : "-translate-x-full"
+        }`}
+      >
+        <ul className="flex flex-col gap-1 px-3 pt-20">
+          {navLinks(drawerLinkClass, () => setMenuOpen(false))}
+        </ul>
+      </nav>
     </header>
   );
 }
-
-export default Header;

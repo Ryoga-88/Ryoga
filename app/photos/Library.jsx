@@ -1,164 +1,85 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
 import "photoswipe/style.css";
+import FilterChips from "app/components/filter-chips";
 import { useCategory } from "app/components/category";
 
+const THUMB_WIDTH = 500;
+const FULL_WIDTH = 3000;
+const EAGER_COUNT = 8;
+
+// Every photo URL is built here, so moving off Gyazo only touches this function.
+function photoUrls(post) {
+  return {
+    thumbnail: `${post.url}/thumb/${THUMB_WIDTH}`,
+    original: `${post.url}/thumb/${FULL_WIDTH}`,
+  };
+}
+
+function aspectHeight(aspect, width) {
+  const [w, h] = aspect.split(" / ").map(Number);
+  return Math.round((width * h) / w);
+}
+
 export default function Library({ posts }) {
-  const {
-    selectedCategory,
-    categories,
-    categoryCounts,
-    selectCategory,
-    filteredPosts,
-  } = useCategory(posts);
-
-  const images = useMemo(() => {
-    return posts
-      .filter(
-        (post) =>
-          selectedCategory === "all" || post.category === selectedCategory
-      )
-      .map((post) => {
-        const [aspectWidth, aspectHeight] = post.aspect
-          .split(" / ")
-          .map(Number);
-        const width = 3000;
-        const height = (width * aspectHeight) / aspectWidth;
-
-        return {
-          original: `${post.url}/thumb/3000`,
-          thumbnail: `${post.url}/thumb/500`,
-          description: post.title,
-          width,
-          height,
-        };
-      });
-  }, [filteredPosts, selectedCategory]);
+  const { selectedCategory, categories, categoryCounts, selectCategory, filteredPosts } = useCategory(posts);
+  const labels = Object.fromEntries(posts.map((post) => [post.category, post.title]));
 
   useEffect(() => {
-    let lightbox = new PhotoSwipeLightbox({
+    const lightbox = new PhotoSwipeLightbox({
       gallery: "#photo-gallery",
       children: "a",
       pswpModule: () => import("photoswipe"),
     });
     lightbox.init();
+    return () => lightbox.destroy();
+  }, [filteredPosts]);
 
-    return () => {
-      lightbox.destroy();
-      lightbox = null;
-    };
-  }, [images]);
+  const options = [
+    { value: "all", label: "すべて", count: posts.length },
+    ...categories.map((category) => ({
+      value: category,
+      label: labels[category],
+      count: categoryCounts[category],
+      icon: (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={`/images/${category}-flag.svg`} alt="" width={16} height={16} className="size-4 rounded-sm object-cover" />
+      ),
+    })),
+  ];
 
   return (
-    <div
-      className="container mx-auto px-2 py-6"
-      style={{ position: "relative", zIndex: 10 }}
-    >
-      <div className="overflow-x-auto whitespace-nowrap space-x-8 flex justify-start md:justify-center items-center px-2 py-2 text-neutral-400 dark:text-white">
-        <button
-          onClick={() => selectCategory("all")}
-          className={`hover:text-neutral-500 ${
-            selectedCategory === "all" ? "underline" : ""
-          }`}
-        >
-          すべて ({posts.length})
-        </button>
-        {categories.map((category) => (
-          <button
-            key={category}
-            onClick={() => selectCategory(category)}
-            className={`hover:text-neutral-500 ${
-              selectedCategory === category ? "underline" : ""
-            }`}
-          >
-            {categoryEmojis[category] || "📚"} {category} (
-            {categoryCounts[category]})
-          </button>
-        ))}
+    <>
+      <FilterChips label="国" options={options} selected={selectedCategory} onSelect={selectCategory} />
+      <div id="photo-gallery" className="grid grid-cols-2 gap-1.5 sm:grid-cols-3 md:grid-cols-4">
+        {filteredPosts.map((post, index) => {
+          const { thumbnail, original } = photoUrls(post);
+          return (
+            <a
+              key={`${index}-${post.url}`}
+              href={original}
+              data-pswp-width={FULL_WIDTH}
+              data-pswp-height={aspectHeight(post.aspect, FULL_WIDTH)}
+              target="_blank"
+              rel="noreferrer"
+              className="block aspect-square overflow-hidden rounded-md bg-soft"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={thumbnail}
+                alt={`${post.title}で撮影した写真`}
+                width={THUMB_WIDTH}
+                height={aspectHeight(post.aspect, THUMB_WIDTH)}
+                loading={index < EAGER_COUNT ? "eager" : "lazy"}
+                decoding="async"
+                className="size-full object-cover transition-transform duration-500 hover:scale-[1.03]"
+              />
+            </a>
+          );
+        })}
       </div>
-      <div
-        id="photo-gallery"
-        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-      >
-        {images.map((image, index) => (
-          <a
-            href={image.original}
-            data-pswp-width={image.width}
-            data-pswp-height={image.height}
-            key={index}
-            target="_blank"
-            rel="noreferrer"
-            className="aspect-square block overflow-hidden"
-          >
-            <img
-              src={image.thumbnail}
-              alt={image.description}
-              className="object-cover w-full h-full cursor-pointer"
-            />
-          </a>
-        ))}
-      </div>
-    </div>
+    </>
   );
 }
-
-const categoryEmojis = {
-  Turkey: (
-    <img
-      src="/images/Turkey-flag.svg"
-      alt="Turkey Flag"
-      className="inline-block w-4 h-4 mr-1"
-    />
-  ),
-  India: (
-    <img
-      src="/images/India-flag.svg"
-      alt="India Flag"
-      className="inline-block w-4 h-4 mr-1"
-    />
-  ),
-  Vietnam: (
-    <img
-      src="/images/Vietnam-flag.svg"
-      alt="Vietnam Flag"
-      className="inline-block w-4 h-4 mr-1"
-    />
-  ),
-  Cambodia: (
-    <img
-      src="/images/Cambodia-flag.svg"
-      alt="Cambodia Flag"
-      className="inline-block w-4 h-4 mr-1"
-    />
-  ),
-  Thailand: (
-    <img
-      src="/images/Thailand-flag.svg"
-      alt="Thailand Flag"
-      className="inline-block w-4 h-4 mr-1"
-    />
-  ),
-  Singapore: (
-    <img
-      src="/images/Singapore-flag.svg"
-      alt="Singapore Flag"
-      className="inline-block w-4 h-4 mr-1"
-    />
-  ),
-  Malaysia: (
-    <img
-      src="/images/Malaysia-flag.svg"
-      alt="Malaysia Flag"
-      className="inline-block w-4 h-4 mr-1"
-    />
-  ),
-  Italy: (
-    <img
-      src="/images/Italy-flag.svg"
-      alt="Italy Flag"
-      className="inline-block w-4 h-4 mr-1"
-    />
-  ),
-};

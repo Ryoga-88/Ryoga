@@ -2,58 +2,177 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Colour tokens as RGB channels so Tailwind opacity modifiers work
+ * (bg-bg/90 etc.). Every text/background pair here is at least 4.5:1.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  --c-bg: 255 255 255;
+  --c-ink: 36 41 46;
+  --c-muted: 97 104 109;
+  --c-line: 226 230 233;
+  --c-soft: 242 245 247;
+  --c-tint: 238 245 253;
+  --c-tint-strong: 226 237 250;
+  --c-paper: 255 255 255;
+  --c-accent: 37 99 168;
+  --ease-out-expo: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --c-bg: 30 31 32;
+  --c-ink: 228 229 230;
+  --c-muted: 164 169 173;
+  --c-line: 55 57 60;
+  --c-soft: 42 43 45;
+  --c-tint: 37 44 52;
+  --c-tint-strong: 44 53 63;
+  --c-paper: 46 48 51;
+  --c-accent: 143 189 240;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: var(--font-open-sans), "Hiragino Sans", "Hiragino Kaku Gothic ProN",
-    "Yu Gothic", "Meiryo", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.7;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+:focus-visible {
+  outline: 2px solid rgb(var(--c-accent));
+  outline-offset: 2px;
 }
 
-/* globals.css */
-article h1,
-article h2,
-article h3,
-article h4,
-article h5,
-article h6 {
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 50;
+  border-radius: 999px;
+  background: rgb(var(--c-ink));
+  color: rgb(var(--c-bg));
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
 }
 
-article p {
-  margin-bottom: 1rem;
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+/* Theme switch (same structure as hairsalon-saas). */
+.theme-toggle__track {
+  position: relative;
+  display: grid;
+  width: 54px;
+  height: 30px;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  justify-items: center;
+  border: 1px solid rgb(var(--c-line));
+  border-radius: 999px;
+  background: rgb(var(--c-soft));
+  transition: border-color 200ms ease;
+}
+
+.theme-toggle__thumb {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgb(var(--c-paper));
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.14), 0 0 0 1px rgb(var(--c-line));
+  transition: transform 200ms ease;
+}
+
+.theme-toggle__sun,
+.theme-toggle__moon {
+  position: relative;
+  color: rgb(var(--c-muted));
+  transition: color 200ms ease;
+}
+
+.theme-toggle__sun { color: rgb(var(--c-ink)); }
+[data-theme="dark"] .theme-toggle__thumb { transform: translateX(24px); }
+[data-theme="dark"] .theme-toggle__sun { color: rgb(var(--c-muted)); }
+[data-theme="dark"] .theme-toggle__moon { color: rgb(var(--c-ink)); }
+.theme-toggle:hover .theme-toggle__track { border-color: rgb(var(--c-muted)); }
+
+/*
+ * Post card preview: a miniature page like sizu.me. Text is laid out at a
+ * legible 12px and scaled down, so it stays crisp and passes font-size audits.
+ */
+.post-paper {
+  position: relative;
+  width: 35%;
+  height: 70%;
+  overflow: hidden;
+  border-radius: 4px;
+  background: rgb(var(--c-paper));
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 6px 18px -8px rgb(0 0 0 / 0.12);
+  transition: transform 400ms var(--ease-out-expo);
+}
+
+.group:hover .post-paper {
+  transform: translateY(-3px);
+}
+
+.post-paper__inner {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 250%;
+  height: 250%;
+  transform: scale(0.4);
+  transform-origin: 0 0;
+  padding: 24px 22px;
+  font-size: 12px;
+  line-height: 1.85;
+  color: rgb(var(--c-ink) / 0.7);
+}
+
+.post-paper__title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: 700;
   line-height: 1.6;
+  color: rgb(var(--c-ink));
 }
 
-article ul,
-article ol {
-  margin-left: 1.5rem;
-  margin-bottom: 1rem;
+.post-paper__image {
+  width: 100%;
+  aspect-ratio: 1.91;
+  margin-bottom: 12px;
+  border-radius: 4px;
+  object-fit: cover;
 }
 
-article a {
-  color: #1e90ff;
-  text-decoration: underline;
+/* Long-form reading, tuned after sizu.me: roomy leading, slight tracking. */
+.article-body {
+  font-size: 1.06rem;
+  line-height: 2;
+  letter-spacing: 0.03em;
 }
 
-article a:hover {
-  color: #374151;
+.article-body > * + * { margin-top: 1.4em; }
+.article-body h2 { margin-top: 2.6em; font-size: 1.3rem; font-weight: 700; line-height: 1.6; }
+.article-body h3 { margin-top: 2.2em; font-size: 1.12rem; font-weight: 700; line-height: 1.6; }
+.article-body ul { list-style: disc; padding-left: 1.4em; }
+.article-body ol { list-style: decimal; padding-left: 1.4em; }
+.article-body li + li { margin-top: 0.35em; }
+.article-body a { color: rgb(var(--c-accent)); text-decoration: underline; text-underline-offset: 0.2em; }
+.article-body blockquote { border-left: 3px solid rgb(var(--c-line)); padding-left: 1em; color: rgb(var(--c-muted)); }
+.article-body code { border-radius: 4px; background: rgb(var(--c-soft)); padding: 0.1em 0.35em; font-size: 0.9em; }
+.article-body img { border-radius: 12px; }
+.article-body hr { border-color: rgb(var(--c-line)); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }

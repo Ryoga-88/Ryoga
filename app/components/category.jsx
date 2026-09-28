@@ -1,6 +1,9 @@
-import { useState, useMemo } from "react";
+import { useLayoutEffect, useMemo, useState } from "react";
 
-export const useCategory = (posts) => {
+// urlParam keeps the selection in the query string, so the browser's back
+// button returns to the same filter. It is read after hydration rather than
+// with useSearchParams, which would drop the list from the static HTML.
+export const useCategory = (posts, { urlParam } = {}) => {
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const categoryCounts = useMemo(() => {
@@ -14,8 +17,19 @@ export const useCategory = (posts) => {
     return Array.from(new Set(posts.map((post) => post.category)));
   }, [posts]);
 
+  useLayoutEffect(() => {
+    if (!urlParam) return;
+    const value = new URLSearchParams(window.location.search).get(urlParam);
+    if (categories.includes(value)) setSelectedCategory(value);
+  }, [urlParam, categories]);
+
   const selectCategory = (category) => {
     setSelectedCategory(category);
+    if (!urlParam) return;
+    const url = new URL(window.location.href);
+    if (category === "all") url.searchParams.delete(urlParam);
+    else url.searchParams.set(urlParam, category);
+    window.history.replaceState(null, "", url);
   };
 
   const filteredPosts = useMemo(() => {
