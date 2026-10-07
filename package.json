@@ -4,17 +4,30 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "upload:photos": "node scripts/uploadPhotos.js",
+    "preview": "PHOTO_CURATION=0 SITE_PREVIEW=1 next build --webpack && PHOTO_CURATION=0 SITE_PREVIEW=1 next start --hostname 127.0.0.1 --port 3002",
+    "photos:import": "python3 scripts/importApplePhotos.py",
+    "photos:curate": "PHOTO_CURATION=1 next dev --webpack --hostname 127.0.0.1 --port 3000",
+    "photos:map": "node scripts/buildPhotoMap.cjs",
+    "photos:r2:preview": "node scripts/previewR2Photos.cjs",
+    "photos:r2:upload": "node scripts/migrateR2Photos.cjs",
+    "test:photos": "node --test scripts/lib/photoCuration.test.cjs scripts/lib/selectionStorage.test.cjs scripts/lib/saveSelection.test.cjs scripts/lib/r2Preview.test.cjs scripts/lib/photoOrder.test.cjs scripts/lib/photoMap.test.cjs scripts/lib/travelLog.test.cjs scripts/lib/r2Migration.test.cjs scripts/lib/r2PreviewPhotos.test.cjs scripts/lib/photoHighResolution.test.cjs workers/photos/index.test.mjs scripts/lib/photoManifestLock.test.cjs scripts/lib/photoRecoveryPreparation.test.cjs",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "photos:refresh": "node scripts/refreshHighResolutionPhotos.cjs",
+    "photos:recover:prepare": "node scripts/preparePhotoRecovery.cjs"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "3.1147.0",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "d3-geo": "^3.1.1",
+    "d3-selection": "^3.0.0",
+    "d3-transition": "^3.0.1",
+    "d3-zoom": "^3.0.0",
     "gray-matter": "^4.0.3",
     "lg-hash": "^1.0.4",
     "lg-share": "^1.2.1",
@@ -29,7 +42,10 @@
     "react-markdown": "^9.0.1",
     "react-photoswipe-gallery": "^3.0.2",
     "remark": "^15.0.1",
-    "remark-html": "^16.0.1"
+    "remark-html": "^16.0.1",
+    "sharp": "0.34.5",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",

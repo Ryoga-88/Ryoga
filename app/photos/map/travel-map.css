@@ -1,0 +1,114 @@
+/*
+ * Map colours follow the site tokens. The three most recent trip years get their
+ * own hue (newest = blue); together they pass the colour-blind all-pairs checks in
+ * both themes. Older years share a neutral grey, and inactive trips a fainter one.
+ */
+.travel-map {
+  --map-land: 226 230 233;
+  --map-visited: 199 215 233;
+  --map-active: 180 201 226;
+  --map-year-0: 37 99 168;
+  --map-year-1: 235 104 52;
+  --map-year-2: 27 175 122;
+  --map-year-3: var(--c-muted);
+  --map-dim: rgb(var(--c-muted) / 0.4);
+}
+
+[data-theme="dark"] .travel-map {
+  --map-land: 52 54 57;
+  --map-visited: 55 66 78;
+  --map-active: 64 80 97;
+  --map-year-0: 57 135 229;
+  --map-year-1: 217 89 38;
+  --map-year-2: 25 158 112;
+  --map-year-3: var(--c-muted);
+  --map-dim: rgb(var(--c-muted) / 0.24);
+}
+
+.travel-map svg[role="group"] {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.map-land {
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.map-land.is-ready {
+  opacity: 1;
+}
+
+.map-country {
+  fill: rgb(var(--map-land));
+  transition: fill 300ms ease;
+}
+
+.map-country.is-visited { fill: rgb(var(--map-visited)); }
+.map-country.is-active { fill: rgb(var(--map-active)); }
+
+.map-borders {
+  fill: none;
+  stroke: rgb(var(--c-bg));
+  stroke-width: 0.75px;
+  stroke-linejoin: round;
+}
+
+.map-route {
+  fill: none;
+  stroke-width: 2px;
+  stroke-linecap: round;
+}
+
+.map-route.is-new {
+  stroke-dasharray: 1;
+  animation: map-route-draw 700ms var(--ease-out-expo) both;
+}
+
+@keyframes map-route-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+.map-arrow.is-new {
+  animation: map-fade 250ms 450ms both;
+}
+
+@keyframes map-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.map-label {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  fill: rgb(var(--c-ink));
+  paint-order: stroke;
+  stroke: rgb(var(--c-bg));
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.map-place {
+  cursor: pointer;
+  outline: none;
+}
+
+.map-pulse {
+  fill: none;
+  stroke-width: 1.5px;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: map-pulse 1.8s ease-out infinite;
+}
+
+@keyframes map-pulse {
+  from { transform: scale(0.7); opacity: 0.9; }
+  to { transform: scale(2); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-pulse { animation: none; opacity: 0.5; }
+}

@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Keep a production preview separate from the running curation dev server.
+  distDir: process.env.SITE_PREVIEW === "1" ? ".next-preview" : ".next",
+  outputFileTracingExcludes: { "/*": ["./.local/**/*"] },
   images: {
     formats: ["image/avif", "image/webp"],
   },

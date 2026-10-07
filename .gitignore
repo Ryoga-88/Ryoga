@@ -11,6 +11,7 @@
 
 # next.js
 /.next/
+/.next-preview/
 /out/
 
 # production
@@ -28,9 +29,17 @@ yarn-error.log*
 # local env files
 .env*.local
 
+# Private Apple Photos catalog, previews, and local processing cache
+/.local/
+__pycache__/
+
+# Generated photo files are stored locally and delivered from R2, not GitHub
+/public/images/photos/
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.gstack/

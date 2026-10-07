@@ -1,41 +1,21 @@
 "use client";
 
-import { useEffect } from "react";
-import PhotoSwipeLightbox from "photoswipe/lightbox";
-import "photoswipe/style.css";
+import { useMemo } from "react";
 import FilterChips from "app/components/filter-chips";
+import CountryFlag from "app/components/country-flag";
 import { useCategory } from "app/components/category";
+import { sortPhotosByCaptureDate } from "app/lib/photo-order.mjs";
+import { FULL_WIDTH, THUMB_WIDTH, aspectHeight, photoCaption, photoUrls, usePhotoLightbox } from "./photo-lightbox";
 
-const THUMB_WIDTH = 500;
-const FULL_WIDTH = 3000;
 const EAGER_COUNT = 8;
 
-// Every photo URL is built here, so moving off Gyazo only touches this function.
-function photoUrls(post) {
-  return {
-    thumbnail: `${post.url}/thumb/${THUMB_WIDTH}`,
-    original: `${post.url}/thumb/${FULL_WIDTH}`,
-  };
-}
-
-function aspectHeight(aspect, width) {
-  const [w, h] = aspect.split(" / ").map(Number);
-  return Math.round((width * h) / w);
-}
-
 export default function Library({ posts }) {
-  const { selectedCategory, categories, categoryCounts, selectCategory, filteredPosts } = useCategory(posts);
+  const { selectedCategory, categories, categoryCounts, selectCategory, filteredPosts } = useCategory(posts, { urlParam: "country" });
+  const orderedPosts = useMemo(() => sortPhotosByCaptureDate(filteredPosts), [filteredPosts]);
   const labels = Object.fromEntries(posts.map((post) => [post.category, post.title]));
+  const countryCodes = Object.fromEntries(posts.filter((post) => post.countryCode).map((post) => [post.category, post.countryCode]));
 
-  useEffect(() => {
-    const lightbox = new PhotoSwipeLightbox({
-      gallery: "#photo-gallery",
-      children: "a",
-      pswpModule: () => import("photoswipe"),
-    });
-    lightbox.init();
-    return () => lightbox.destroy();
-  }, [filteredPosts]);
+  usePhotoLightbox("#photo-gallery", orderedPosts);
 
   const options = [
     { value: "all", label: "すべて", count: posts.length },
@@ -43,10 +23,7 @@ export default function Library({ posts }) {
       value: category,
       label: labels[category],
       count: categoryCounts[category],
-      icon: (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={`/images/${category}-flag.svg`} alt="" width={16} height={16} className="size-4 rounded-sm object-cover" />
-      ),
+      icon: <CountryFlag countryCode={countryCodes[category]} category={category} />,
     })),
   ];
 
@@ -54,14 +31,15 @@ export default function Library({ posts }) {
     <>
       <FilterChips label="国" options={options} selected={selectedCategory} onSelect={selectCategory} />
       <div id="photo-gallery" className="grid grid-cols-2 gap-1.5 sm:grid-cols-3 md:grid-cols-4">
-        {filteredPosts.map((post, index) => {
+        {orderedPosts.map((post, index) => {
           const { thumbnail, original } = photoUrls(post);
           return (
             <a
               key={`${index}-${post.url}`}
               href={original}
-              data-pswp-width={FULL_WIDTH}
-              data-pswp-height={aspectHeight(post.aspect, FULL_WIDTH)}
+              data-pswp-width={post.width || FULL_WIDTH}
+              data-pswp-height={post.height || aspectHeight(post.aspect, FULL_WIDTH)}
+              data-photo-caption={photoCaption(post)}
               target="_blank"
               rel="noreferrer"
               className="block aspect-square overflow-hidden rounded-md bg-soft"
