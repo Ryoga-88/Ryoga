@@ -1,12 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { TbMenu2, TbX } from "react-icons/tb";
 import ThemeToggle from "app/components/theme-toggle";
-import avatar from "public/images/eyecatch.jpg";
 
 const NAV_ITEMS = [
   { href: "/projects", label: "Projects" },
@@ -62,14 +60,7 @@ export default function Header() {
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-bg/90 backdrop-blur-md" />
       {/* Above the drawer, so the theme switch and close button stay usable. */}
       <div className="relative z-30 mx-auto flex h-16 max-w-page items-center justify-between gap-3 px-4">
-        <Link href="/" className="flex items-center gap-2.5 rounded-lg py-1">
-          <Image
-            src={avatar}
-            alt=""
-            width={32}
-            height={32}
-            className="size-8 rounded-squircle object-cover"
-          />
+        <Link href="/" className="flex items-center rounded-lg py-1">
           <span className="font-bold tracking-wide">Ryoga Hanafusa</span>
         </Link>
 
