@@ -9,7 +9,7 @@ const FILE_PATTERN = /^(\d{4}-\d{2}-\d{2})-(.+)\.ja\.md$/;
 const NOTE_REVALIDATE_SECONDS = 3600;
 
 const CATEGORY_LABELS = {
-  note: "ノート",
+  lifestyle: "暮らし・考え方",
   research: "研究",
   technology: "技術",
   other: "その他",
@@ -59,7 +59,7 @@ function readLocalPost(filename, date, slug) {
     slug,
     date,
     title: data.title,
-    category: data.category ?? "note",
+    category: data.category ?? "other",
     keywords: data.keywords ?? [],
     externalUrl: data.externalUrl ?? null,
     source: data.externalUrl ? sourceName(data.externalUrl) : null,
@@ -117,7 +117,7 @@ async function fetchNotePosts() {
             slug: note.key,
             date: note.publishAt.slice(0, 10),
             title: note.name,
-            category: "note",
+            category: "other",
             keywords: (note.hashtags ?? []).map(({ hashtag }) => hashtag.name.replace(/^#/, "")),
             externalUrl: note.noteUrl,
             source: "note",

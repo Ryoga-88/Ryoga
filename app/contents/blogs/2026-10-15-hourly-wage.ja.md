@@ -1,6 +1,6 @@
 ---
 title: "時給という考え方"
-category: "note"
+category: "lifestyle"
 keywords: [時給, 働き方, 時間, 信頼, 積み重ね]
 externalUrl: "https://note.com/ryoga_hanafusa/n/nf4374a9968a3"
 image: "https://assets.st-note.com/production/uploads/images/324627380/rectangle_large_type_2_79029a064962bb02277ed3602cc9551c.png?fit=bounds&quality=85&width=240"

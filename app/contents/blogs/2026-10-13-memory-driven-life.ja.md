@@ -1,6 +1,6 @@
 ---
 title: "思い出ドリブンな生き方"
-category: "note"
+category: "lifestyle"
 keywords: [思い出, 生き方, 旅行, 時間, お金]
 externalUrl: "https://note.com/ryoga_hanafusa/n/nca3ac9d85854"
 image: "https://assets.st-note.com/production/uploads/images/323737303/rectangle_large_type_2_52258bcb2b92d6d74a155543640c6609.jpeg?fit=bounds&quality=85&width=240"

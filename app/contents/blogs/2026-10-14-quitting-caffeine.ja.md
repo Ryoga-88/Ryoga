@@ -1,6 +1,6 @@
 ---
 title: "カフェインをやめてみた"
-category: "note"
+category: "lifestyle"
 keywords: [カフェイン, コーヒー, 習慣, 睡眠, SNS]
 externalUrl: "https://note.com/ryoga_hanafusa/n/n8de7a6357bff"
 image: "https://assets.st-note.com/production/uploads/images/323916271/rectangle_large_type_2_2bc7510f058172b3911f9b38cb39a5d8.png?fit=bounds&quality=85&width=240"
