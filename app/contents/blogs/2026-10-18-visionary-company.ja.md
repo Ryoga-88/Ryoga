@@ -3,6 +3,7 @@ title: "『ビジョナリー・カンパニー 時代を超える生存の原�
 category: "lifestyle"
 keywords: [ビジョナリー・カンパニー, 読書, 組織づくり, 時計づくり, 基本理念]
 externalUrl: "https://note.com/ryoga_hanafusa/n/n171308c52ce7"
+image: "https://assets.st-note.com/production/uploads/images/325901159/rectangle_large_type_2_e50569550ea6f83934ec764120b9805f.png?fit=bounds&quality=85&width=240"
 ---
 
 『ビジョナリー・カンパニー 時代を超える生存の原則』を読み、人や製品が替わっても価値を生み続ける組織について考えました。
