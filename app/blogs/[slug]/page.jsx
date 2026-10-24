@@ -5,7 +5,7 @@ import { TbArrowLeft, TbArrowUpRight } from "react-icons/tb";
 import BackLink from "app/components/back-link";
 import JsonLd from "app/components/json-ld";
 import { getLocalPost, getLocalPosts } from "app/lib/posts";
-import { PERSON_ID, absoluteUrl, formatDate, pageMetadata } from "app/lib/site";
+import { SITE, absoluteUrl, authorJsonLd, formatDate, pageMetadata } from "app/lib/site";
 
 export const dynamicParams = false;
 
@@ -53,6 +53,10 @@ export default async function BlogPostPage({ params }) {
         <h1 className="mt-3 text-[1.6rem] font-bold leading-[1.6] tracking-wide sm:text-[1.85rem]">{post.title}</h1>
         <p className="mt-3 text-sm tracking-wide text-muted">
           <time dateTime={post.date}>{formatDate(post.date)}</time>に公開
+          <span aria-hidden="true"> · </span>
+          <Link href="/" rel="author" className="hover:text-ink">
+            {SITE.author}
+          </Link>
         </p>
         {post.keywords.length > 0 && (
           <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="キーワード">
@@ -100,8 +104,8 @@ export default async function BlogPostPage({ params }) {
             inLanguage: "ja",
             url: post.url,
             mainEntityOfPage: post.url,
-            author: { "@id": PERSON_ID },
-            publisher: { "@id": PERSON_ID },
+            author: authorJsonLd(),
+            publisher: authorJsonLd(),
             keywords: post.keywords.join(", "),
             ...(post.externalUrl && { isBasedOn: post.externalUrl }),
           }}

@@ -5,10 +5,15 @@ export const SITE = {
   name: "Ryoga.io",
   author: "花房 亮雅",
   authorEn: "Ryoga Hanafusa",
+  authorReading: "はなふさ りょうが",
+  authorAliases: ["花房亮雅", "はなふさりょうが", "はなふさ りょうが", "Ryoga Hanafusa", "Hanafusa Ryoga", "HanafusaRyoga"],
+  familyNames: ["花房", "はなふさ", "Hanafusa"],
+  givenNames: ["亮雅", "りょうが", "Ryoga"],
+  role: "プログラマー",
   title: "花房 亮雅 (Ryoga Hanafusa)",
   description:
-    "花房亮雅（Ryoga Hanafusa）のポートフォリオ。大阪公立大学大学院 知能情報学分野専攻、株式会社Affectify社員。ラフ集合理論に基づくクラスタリングベースの協調フィルタリングを研究しています。制作物・写真・ブログを掲載。",
-  bio: "大阪公立大学大学院 知能情報学分野専攻．株式会社Affectify社員．第八期公益財団法人シマノ財団奨学生，2023年度・2024年度・2025年度・2026年度フジシール財団奨学生．現在はラフ集合理論に基づくクラスタリングベースの協調フィルタリングに関する研究に取り組んでいます．大学ではC言語，JavaScript，JavaやPythonなどを学びました．新しい技術や製品に触れたり学ぶことを愛しています．",
+    "花房亮雅（はなふさりょうが / Ryoga Hanafusa）のポートフォリオ。AI（人工知能）を使ったアプリやWebサービスを開発するプログラマー。大阪公立大学大学院で推薦システムを研究。株式会社Affectify社員。制作物・写真・ブログを掲載。",
+  bio: "AI（人工知能）を使ったアプリやWebサービスを開発するプログラマーです．大阪公立大学大学院 知能情報学分野専攻．株式会社Affectify社員．第八期公益財団法人シマノ財団奨学生，2023年度・2024年度・2025年度・2026年度フジシール財団奨学生．現在はラフ集合理論に基づくクラスタリングベースの協調フィルタリングに関する研究に取り組んでいます．大学ではC言語，JavaScript，JavaやPythonなどを学びました．新しい技術や製品に触れたり学ぶことを愛しています．",
   keywords: [
     "花房亮雅",
     "はなふさりょうが",
@@ -40,7 +45,11 @@ export function personJsonLd() {
     "@type": "Person",
     "@id": PERSON_ID,
     name: SITE.author,
-    alternateName: [SITE.authorEn, "Hanafusa Ryoga", "はなふさ りょうが"],
+    alternateName: SITE.authorAliases,
+    // Surnames describe part of the name, rather than identifying a person alone.
+    familyName: SITE.familyNames,
+    givenName: SITE.givenNames,
+    jobTitle: SITE.role,
     url: absoluteUrl("/"),
     image: absoluteUrl(SITE.image),
     description: SITE.bio,
@@ -51,6 +60,10 @@ export function personJsonLd() {
       "フジシール財団奨学生（2023年度・2024年度・2025年度・2026年度）",
     ],
     knowsAbout: [
+      "人工知能（AI）",
+      "生成AI",
+      "AIエージェント開発",
+      "Webアプリケーション開発",
       "ラフ集合理論",
       "クラスタリング",
       "協調フィルタリング",
@@ -64,6 +77,17 @@ export function personJsonLd() {
       "Flutter",
     ],
     sameAs: SITE.sameAs,
+  };
+}
+
+// Keep the author understandable even when a consumer reads an article's
+// JSON-LD separately from the site-wide graph. The @id joins the two records.
+export function authorJsonLd() {
+  return {
+    "@type": "Person",
+    "@id": PERSON_ID,
+    name: SITE.author,
+    url: absoluteUrl("/"),
   };
 }
 

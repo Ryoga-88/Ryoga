@@ -5,8 +5,8 @@ import { SITE, absoluteUrl } from "app/lib/site";
 export const dynamic = "force-static";
 export const revalidate = 3600;
 
-// /llms.txt (https://llmstxt.org): a plain summary for AI assistants that
-// answer questions about this person and cite the pages below.
+// /llms.txt (https://llmstxt.org): a supplemental plain-text summary.
+// It mirrors the public profile; discovery and citations are not guaranteed.
 export async function GET() {
   const posts = await getAllPosts();
   const lines = [
@@ -18,7 +18,10 @@ export async function GET() {
     "",
     "## Profile",
     "",
-    `- 名前: ${SITE.author}（はなふさ りょうが / ${SITE.authorEn}）`,
+    `- 名前: ${SITE.author}（${SITE.authorReading} / ${SITE.authorEn}）`,
+    `- 別表記: ${SITE.authorAliases.join(" / ")}`,
+    `- 姓: ${SITE.familyNames.join(" / ")}`,
+    `- 職種: ${SITE.role}`,
     "- 所属: 大阪公立大学大学院 知能情報学分野専攻、株式会社Affectify",
     "- 研究: ラフ集合理論に基づくクラスタリングベースの協調フィルタリング",
     ...SITE.sameAs.map((url) => `- ${url}`),

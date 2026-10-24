@@ -50,7 +50,8 @@ export default async function Home() {
           <h1 id="profile-name" className="text-[1.6rem] font-bold tracking-wider">
             花房 亮雅
           </h1>
-          <p className="mt-0.5 text-sm tracking-widest text-muted">Ryoga Hanafusa</p>
+          <p className="mt-0.5 text-sm tracking-widest text-muted">{SITE.authorEn}</p>
+          <p className="mt-1 text-xs leading-relaxed text-muted">{SITE.authorReading} / HanafusaRyoga</p>
           <p className="mt-5 leading-[1.95] tracking-[0.03em]">{SITE.bio}</p>
           <ul className="mt-5 flex flex-wrap gap-2 text-sm">
             <li>
