@@ -8,7 +8,7 @@
  */
 :root {
   color-scheme: light;
-  --c-bg: 255 255 255;
+  --c-bg: 250 250 250; /* #fafafa: a neutral off-white. */
   --c-ink: 36 41 46;
   --c-muted: 97 104 109;
   --c-line: 226 230 233;
