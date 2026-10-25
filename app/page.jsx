@@ -1,12 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
+import HomePhotos from "app/components/home-photos";
 import JsonLd from "app/components/json-ld";
 import PostCard from "app/components/post-card";
-import ProjectCard from "app/components/project-card";
-import Skills from "app/components/skills";
-import projects from "app/contents/projects/projects";
+import TravelMapPreview from "app/components/travel-map-preview";
+import curated from "app/contents/curated-photos.json";
+import photoMap from "app/contents/photo-map.json";
+// Archived home sections; keep the components and project page for later.
+// import ProjectCard from "app/components/project-card";
+// import Skills from "app/components/skills";
+// import projects from "app/contents/projects/projects";
 import { getAllPosts } from "app/lib/posts";
 import { PERSON_ID, SITE, absoluteUrl, pageMetadata } from "app/lib/site";
+import { buildTravelLog } from "app/lib/travel-log.mjs";
 import avatar from "public/images/eyecatch.jpg";
 
 // New note posts appear without a redeploy.
@@ -34,6 +40,7 @@ function Section({ id, title, more, children }) {
 
 export default async function Home() {
   const posts = (await getAllPosts()).slice(0, 6);
+  const travelLog = buildTravelLog(curated.photos, photoMap);
 
   return (
     <div className="mx-auto max-w-page px-4 pt-10 sm:pt-14">
@@ -78,6 +85,19 @@ export default async function Home() {
         </Section>
       )}
 
+      {curated.photos.length > 0 && (
+        <Section id="photos" title="Photos" more={{ href: "/photos", label: "すべての写真" }}>
+          <HomePhotos photos={curated.photos} />
+        </Section>
+      )}
+
+      {travelLog.places.length > 0 && (
+        <Section id="maps" title="Maps" more={{ href: "/maps", label: "旅の地図を見る" }}>
+          <TravelMapPreview places={travelLog.places} trips={travelLog.trips} years={travelLog.years} />
+        </Section>
+      )}
+
+      {/* Archived: uncomment these sections and their imports to restore them.
       <Section id="projects" title="Projects" more={{ href: "/projects", label: "すべての制作物" }}>
         <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2">
           {projects.slice(0, 4).map((project) => (
@@ -89,6 +109,7 @@ export default async function Home() {
       <Section id="skills" title="Skills">
         <Skills />
       </Section>
+      */}
 
       <JsonLd
         data={{

@@ -20,9 +20,12 @@ function photoDate(photo) {
 }
 
 function PhotoImage({ photo, preview = false, eager = false }) {
-  const [failed, setFailed] = useState(false);
   const source = preview ? photo.previewUrl : photo.thumbnailUrl;
-  useEffect(() => setFailed(false), [source]);
+  return <PhotoImageSource key={source} source={source} photo={photo} preview={preview} eager={eager} />;
+}
+
+function PhotoImageSource({ source, photo, preview, eager }) {
+  const [failed, setFailed] = useState(false);
 
   if (photo.available === false || !source || failed) {
     return (
@@ -185,7 +188,8 @@ export default function Curator({ initialData }) {
   }, [photos, preview]);
   const closePreview = useCallback(() => setPreview(null), []);
 
-  useEffect(() => { setPage(1); }, [country, status, search, sort]);
+  // Selection can change in another tab; retain the clamped page if results later grow.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setPage((value) => Math.min(value, totalPages)); }, [totalPages]);
 
   const save = useCallback(async (ids, nextStatus) => {
@@ -232,6 +236,12 @@ export default function Curator({ initialData }) {
     document.getElementById("curator-results")?.scrollIntoView({ block: "start", behavior: "instant" });
   }
 
+  function changeFilter(setFilter, currentValue, nextValue) {
+    if (currentValue === nextValue) return;
+    setFilter(nextValue);
+    setPage(1);
+  }
+
   function showPhotos(nextStatus) {
     setCountry("all");
     setStatus(nextStatus);
@@ -257,14 +267,14 @@ export default function Curator({ initialData }) {
       <section className="curator-filters" aria-label="写真の絞り込み">
         <div className="curator-filter-heading">国<span>中国・スペイン・アルバニアを除く</span></div>
         <div className="curator-countries" aria-label="国" role="group">
-          <button type="button" aria-pressed={country === "all"} onClick={() => setCountry("all")}>すべて<span>{number(photos.length)}</span></button>
-          {countries.map((item) => <button type="button" key={item.code} aria-pressed={country === item.code} onClick={() => setCountry(item.code)}><CountryFlag category={item.code} />{item.label}<span>{number(item.count)}</span></button>)}
+          <button type="button" aria-pressed={country === "all"} onClick={() => changeFilter(setCountry, country, "all")}>すべて<span>{number(photos.length)}</span></button>
+          {countries.map((item) => <button type="button" key={item.code} aria-pressed={country === item.code} onClick={() => changeFilter(setCountry, country, item.code)}><CountryFlag category={item.code} />{item.label}<span>{number(item.count)}</span></button>)}
         </div>
         <div className="curator-filter-bottom">
           <div className="curator-status-filters" role="group" aria-label="選別状態">
-            {["unreviewed", "selected", "included", "excluded", "all"].map((value) => <button type="button" key={value} aria-pressed={status === value} onClick={() => setStatus(value)}>{value === "all" ? "すべて" : value === "selected" ? "チェック中" : STATUS_LABELS[value]}<span>{number(value === "all" ? countryPhotos.length : value === "selected" ? countryPhotos.filter((photo) => selectedIds.has(photo.id)).length : statusCounts[value])}</span></button>)}
+            {["unreviewed", "selected", "included", "excluded", "all"].map((value) => <button type="button" key={value} aria-pressed={status === value} onClick={() => changeFilter(setStatus, status, value)}>{value === "all" ? "すべて" : value === "selected" ? "チェック中" : STATUS_LABELS[value]}<span>{number(value === "all" ? countryPhotos.length : value === "selected" ? countryPhotos.filter((photo) => selectedIds.has(photo.id)).length : statusCounts[value])}</span></button>)}
           </div>
-          <div className="curator-search-sort"><label className="curator-search"><FiSearch aria-hidden="true" /><span className="sr-only">国名・撮影日で検索</span><input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="国名・撮影日で検索" /></label><label><span className="sr-only">並び順</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option value="newest">新しい順</option><option value="oldest">古い順</option></select></label></div>
+          <div className="curator-search-sort"><label className="curator-search"><FiSearch aria-hidden="true" /><span className="sr-only">国名・撮影日で検索</span><input type="search" value={search} onChange={(event) => changeFilter(setSearch, search, event.target.value)} placeholder="国名・撮影日で検索" /></label><label><span className="sr-only">並び順</span><select value={sort} onChange={(event) => changeFilter(setSort, sort, event.target.value)}><option value="newest">新しい順</option><option value="oldest">古い順</option></select></label></div>
         </div>
       </section>
 

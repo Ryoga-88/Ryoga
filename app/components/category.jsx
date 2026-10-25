@@ -20,6 +20,8 @@ export const useCategory = (posts, { urlParam } = {}) => {
   useLayoutEffect(() => {
     if (!urlParam) return;
     const value = new URLSearchParams(window.location.search).get(urlParam);
+    // Restore the browser URL after hydration while retaining the full static list.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (categories.includes(value)) setSelectedCategory(value);
   }, [urlParam, categories]);
 

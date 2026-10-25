@@ -6,7 +6,7 @@ import { TbArrowRight, TbPlayerPauseFilled, TbPlayerPlayFilled, TbX } from "reac
 import FilterChips from "app/components/filter-chips";
 import CountryFlag from "app/components/country-flag";
 import { formatRange, tripTitle, yearLegend, yearTone as toneForYear } from "app/lib/travel-log.mjs";
-import { FULL_WIDTH, THUMB_WIDTH, aspectHeight, photoCaption, usePhotoLightbox } from "../photo-lightbox";
+import { FULL_WIDTH, THUMB_WIDTH, aspectHeight, photoCaption, usePhotoLightbox } from "app/photos/photo-lightbox";
 import WorldMap from "./WorldMap";
 import "./travel-map.css";
 
@@ -35,12 +35,11 @@ export default function TravelMap({ places, trips, years, countryNames, countryC
   const countryName = (code) => countryNames[code] || code;
 
   useEffect(() => {
-    if (!playing || step === null) return undefined;
-    if (step >= lastStep) {
-      setPlaying(false);
-      return undefined;
-    }
-    const timer = setTimeout(() => setStep(step + 1), stops[step].index === 0 && !selectedTrip ? NEW_TRIP_MS : STEP_MS);
+    if (!playing || step === null || step >= lastStep) return undefined;
+    const timer = setTimeout(() => {
+      setStep(step + 1);
+      if (step + 1 >= lastStep) setPlaying(false);
+    }, stops[step].index === 0 && !selectedTrip ? NEW_TRIP_MS : STEP_MS);
     return () => clearTimeout(timer);
   }, [playing, step, lastStep, stops, selectedTrip]);
 
@@ -56,7 +55,7 @@ export default function TravelMap({ places, trips, years, countryNames, countryC
   const togglePlay = () => {
     if (playing) return setPlaying(false);
     if (step === null || step >= lastStep) setStep(0);
-    setPlaying(true);
+    setPlaying(lastStep > 0);
   };
 
   const goTo = (index) => {

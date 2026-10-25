@@ -1,5 +1,22 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## 開発環境
+
+Node.jsは `.nvmrc` の **24.22.1（24系LTS）**、依存関係の更新はnpm **12.2.1** を基準にしています。`package.json` の `engines.node` も24系に固定しています。
+
+nvmを使う場合は `nvm install` と `nvm use` で切り替えます。miseでは `mise exec node@24.22.1 -- npm ci` のように、このプロジェクトのコマンドだけ24系で実行できます。
+
+```bash
+npm ci
+npm run lint
+npm run test:photos
+npx next build --webpack
+```
+
+`npm run lint` はESLintのflat configを使用します。Next.jsとReactを更新し、Tailwind CSSは現在の表示を保つため3系の最新版を使用しています。
+
+`overrides` は間接依存の `brace-expansion` と `postcss-selector-parser` を修正版へ固定しています。変更時は `npm audit` とビルド・画面表示を確認してください。
+
 ## 写真を選別する（このMac専用）
 
 ```bash
@@ -53,7 +70,7 @@ npm run preview
 
 ### 旅の地図
 
-[Photosの「地図」](http://127.0.0.1:3000/photos/map)で、掲載した写真の撮影場所と巡った順番をたどれます。旅ごとの絞り込み、巡った順の再生、場所ごとの写真表示ができます。
+[Maps](http://127.0.0.1:3000/maps)はPhotosと独立した旅の地図です。掲載した写真の撮影場所と巡った順番をたどれます。旅ごとの絞り込み、巡った順の再生、場所ごとの写真表示ができます。旧URLの `/photos/map` は `/maps` へ転送します。
 
 - 「掲載」「見送り」を保存すると `app/contents/photo-map.json` も自動で更新されます。手動で作り直す場合は `npm run photos:map` を実行します。
 - 公開されるのは場所の名前と、約5km単位に丸めた中心座標だけです。写真ごとの位置情報や住所は公開しません。
@@ -65,7 +82,7 @@ npm run preview
 1. いつもどおり取り込み・選別します。新しい旅（7日以上写真が空くと別の旅）や場所は自動で地図に加わります。
 2. `npm run photos:map -- --check` で地図データが最新か確認します。古い場合は `npm run photos:map` を実行します。
 3. 地図で新しい旅を確認し、`app/contents/curated-photos.json` と `app/contents/photo-map.json` を一緒にコミットします。
-4. 新しい国がシンガポールやバチカンのような小さい国なら、`app/photos/map/WorldMap.jsx` の `COUNTRY_IDS` に国番号を追加します。
+4. 新しい国がシンガポールやバチカンのような小さい国なら、`app/maps/WorldMap.jsx` の `COUNTRY_IDS` に国番号を追加します。
 
 位置情報のない写真は地図に出ません（写真一覧には出ます）。詳しい仕組みと注意点は [AGENTS.md](AGENTS.md) の「旅の地図：写真が増えたとき」にあります。
 

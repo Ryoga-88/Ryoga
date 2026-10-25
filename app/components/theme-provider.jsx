@@ -45,6 +45,8 @@ export function ThemeProvider({ children }) {
         setPreference(readThemePreference());
       }
     };
+    // Restore browser preferences after hydration, before enabling the theme switch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPreference(readThemePreference());
     syncSystem();
     setReady(true);

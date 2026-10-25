@@ -17,7 +17,7 @@
 - ユーザーが決めた「掲載」「見送り」を写真のUUIDで保存し、再取り込み・再起動・R2移行でも引き継ぐ。選別結果や掲載画像を初期化しない。
 - 写真の画像ファイルはローカルとCloudflare R2で保持し、Git・GitHubに追加しない。UUIDによる選別結果と掲載一覧のJSONをバージョン管理する。
 - 現在は日本（JP）・中国（CN）・スペイン（ES）・アルバニア（AL）を対象外にしている。除外国の変更時はインポーターと保存処理の両方をそろえる。
-- 撮影国・日時・緯度経度はローカルに保持する。公開する地図（`/photos/map`）には、近い写真をまとめた「場所」の名前と、0.05°（約5km）単位に丸めた中心座標だけを出す。写真ごとのGPS・住所は公開しない。
+- 撮影国・日時・緯度経度はローカルに保持する。公開する地図（`/maps`）には、近い写真をまとめた「場所」の名前と、0.05°（約5km）単位に丸めた中心座標だけを出す。写真ごとのGPS・住所は公開しない。
 - Photos・R2確認・選別画面の国フィルターは、すべての国名の左に国旗を表示する（「すべて」は対象外）。国を追加するときも国旗を省略しない。
 - Photos・R2確認の拡大表示では、国名・取得できた州県／市区名・撮影日を下部に小さく控えめに表示する。写真を切り替えると表示も更新する。詳しい地名や日付がなければ、その項目は省略して推測しない。正確なGPS・住所・番地・元画像の保存場所は表示しない。
 - Photos・R2確認は上から下へ古い→新しい撮影日順。同じ日は撮影時刻がある写真を時刻順、その後に時刻不明の写真を元の順で表示する。日付不明は最後。国で絞った一覧と拡大画面の「次」も同じ順にする。選別画面の新しい順／古い順切り替えは維持する。
@@ -30,7 +30,7 @@
 4. 選別画面がすでに開いている場合は、取り込み後にページを再読み込みする。
 5. 「未選別」に絞り、国・撮影日で対象の旅行を探す。「掲載」「見送り」で自動保存される。
 6. `http://127.0.0.1:3000/photos` で掲載プレビューを確認する。
-7. `http://127.0.0.1:3000/photos/map` で、新しい旅・場所・順路が地図に出ていることを確認する（下記「旅の地図：写真が増えたとき」）。
+7. `http://127.0.0.1:3000/maps` で、新しい旅・場所・順路が地図に出ていることを確認する（下記「旅の地図：写真が増えたとき」）。
 
 画面の「チェック中」は操作対象の選択、「掲載対象」は `included` として確定・保存した写真を表す。「掲載に決定」が確定ボタン。掲載対象は緑の「掲載対象・保存済み」ラベルと専用タブで確認できる。上部の「掲載対象の○枚を見る」は国・検索条件を解除して全対象を表示する。公開サイトへのデプロイ状態は追跡していないため、「公開済み」「掲載中」とは表示しない。掲載対象の一覧は掲載プレビューで確認する。
 
@@ -61,11 +61,11 @@ python3 scripts/importApplePhotos.py --library "/path/to/Photos Library.photosli
 
 ## 旅の地図：写真が増えたとき
 
-地図（`/photos/map`）は、掲載一覧 `app/contents/curated-photos.json` と地図データ `app/contents/photo-map.json` から毎回組み立てる。写真を追加しても、通常はコードを直す必要はない。
+Maps（`/maps`）はPhotos（`/photos`）から独立したページ。旧URLの`/photos/map`は`/maps`へ転送する。地図は、掲載一覧 `app/contents/curated-photos.json` と地図データ `app/contents/photo-map.json` から毎回組み立てる。写真を追加しても、通常はコードを直す必要はない。
 
 1. いつもどおり取り込み・選別する。「掲載」「見送り」「未選別に戻す」を保存すると、掲載一覧と同じロックの中で `photo-map.json` も作り直される。
 2. `npm run photos:map -- --check` で地図データが最新か確認する。「一致しません」と出たら `npm run photos:map` で作り直す。
-3. 地図で新しい旅・場所・順路を確認する。選別サーバーなら `http://127.0.0.1:3000/photos/map`、本番相当なら `npm run preview` 後に `http://127.0.0.1:3002/photos/map`。
+3. 地図で新しい旅・場所・順路を確認する。選別サーバーなら `http://127.0.0.1:3000/maps`、本番相当なら `npm run preview` 後に `http://127.0.0.1:3002/maps`。
 4. `curated-photos.json` と `photo-map.json` を一緒にコミット・デプロイする。片方だけだと新しい写真が地図に出ない。
 
 自動で対応すること：
@@ -80,10 +80,10 @@ python3 scripts/importApplePhotos.py --library "/path/to/Photos Library.photosli
 手作業が必要な場合：
 
 - 地名が読みにくい・不正確：`scripts/lib/photoMap.cjs` の `PLACE_NAMES` に「写真アプリの地名 → 表示名」を追加し、`npm run photos:map`。同じ地名を持つすべての場所に効くため、州名（例：京畿道）を書き換えるときは他の場所への影響を確認する。
-- 新しい国：取り込みの `COUNTRIES` と国旗（上記）に加え、シンガポールやバチカンのような面積の小さい国は `app/photos/map/WorldMap.jsx` の `COUNTRY_IDS` にISO 3166の数字コードを追加する。追加しないと国の塗りが付かないことがある（点と順路は表示される）。
+- 新しい国：取り込みの `COUNTRIES` と国旗（上記）に加え、シンガポールやバチカンのような面積の小さい国は `app/maps/WorldMap.jsx` の `COUNTRY_IDS` にISO 3166の数字コードを追加する。追加しないと国の塗りが付かないことがある（点と順路は表示される）。
 - 選別画面を通さずにスクリプトで掲載写真を追加・削除した場合：`npm run photos:map` を実行する。
 - まとめる距離・旅の区切りを変える場合：`photoMap.cjs` の `PLACE_RADIUS_KM`・`ABSORB_RADIUS_KM`・`MAIN_PLACE_PHOTOS`、`app/lib/travel-log.mjs` の `TRIP_GAP_DAYS`・`MAIN_PLACE_PHOTOS` を変え、`npm run photos:map` と `npm run test:photos` を実行する。`MAIN_PLACE_PHOTOS` は両方で同じ値にする。
-- 年の色を変える・増やす場合：色は `app/photos/map/travel-map.css`、色分けする年数は `travel-log.mjs` の `DISTINCT_YEARS`。地図ではどの2色も隣り合うため、ライト・ダーク両方で色覚シミュレーションの全組み合わせ検証を通す。4色以上は見分けにくくなるため、増やさずに古い年をまとめる。
+- 年の色を変える・増やす場合：色は `app/maps/travel-map.css`、色分けする年数は `travel-log.mjs` の `DISTINCT_YEARS`。地図ではどの2色も隣り合うため、ライト・ダーク両方で色覚シミュレーションの全組み合わせ検証を通す。4色以上は見分けにくくなるため、増やさずに古い年をまとめる。
 
 地図に出ないもの：位置情報のない写真（`--check` が枚数を表示する）と、撮影日のない写真。どちらも写真一覧には表示される。
 
@@ -122,11 +122,13 @@ python3 scripts/importApplePhotos.py --library "/path/to/Photos Library.photosli
 - R2移行：`scripts/migrateR2Photos.cjs` / `scripts/lib/r2Migration.cjs`。現在の掲載対象だけを送り、大小の公開画像を照合した写真から原子的に掲載URLを保存する。配信Workerは `workers/photos/index.mjs`。
 - 選別画面：`app/photos/curate/`。国・日付・状態で絞り込み、60枚ずつ表示・ページをまたいでまとめて選択できる。`usePhotoSelection.js` / `selectionStorage.mjs` がチェックの復元・同期、`saveSelection.mjs` が分割保存を担う。
 - 選別API：`app/api/photo-curation/`。開発モード、`PHOTO_CURATION=1`、ループバック、同一オリジンの更新だけを許可。本番は404。これらの制限を保つ。
-- 地図：`/photos/map`（`app/photos/map/`）。`scripts/lib/photoMap.cjs` が掲載写真を約20km以内の「場所」にまとめ、2枚以下の空港・道中の写真は40km以内の主な場所へ寄せる。地名は写真アプリの州・市名から選び、読みにくい地名は `PLACE_NAMES` で表示名を付ける（同じ地名の全場所に効く）。7日以上写真のない期間で旅を区切る処理は `app/lib/travel-log.mjs`。地名・グループ化を変えたら `npm run photos:map` で作り直し、`npm run photos:map -- --check` で最新か確認できる。年の色分けは `travel-log.mjs` の `yearTone` / `yearLegend`。陸地は `world-atlas` の50m国境データを地図表示時だけ読み込み、外部の地図タイルやAPIキーは使わない。
+- 地図：`/maps`（`app/maps/`）。`scripts/lib/photoMap.cjs` が掲載写真を約20km以内の「場所」にまとめ、2枚以下の空港・道中の写真は40km以内の主な場所へ寄せる。地名は写真アプリの州・市名から選び、読みにくい地名は `PLACE_NAMES` で表示名を付ける（同じ地名の全場所に効く）。7日以上写真のない期間で旅を区切る処理は `app/lib/travel-log.mjs`。地名・グループ化を変えたら `npm run photos:map` で作り直し、`npm run photos:map -- --check` で最新か確認できる。年の色分けは `travel-log.mjs` の `yearTone` / `yearLegend`。陸地は `world-atlas` の50m国境データを地図表示時だけ読み込み、外部の地図タイルやAPIキーは使わない。
 - 本番へのファイル混入防止：`next.config.mjs` の `outputFileTracingExcludes` で `.local/` を除外している。
 - 保存処理等の検証：`npm run test:photos`。一時的な合成画像を使い、ユーザーの選別結果を変更しない。
 - 地名の取り込み検証：`PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_importApplePhotos.py`。合成したplistだけを使い、写真ライブラリにはアクセスしない。
-- ビルド確認：`npx next build --webpack`。既存の `npm run lint` はNext 16で利用できない `next lint` を指しており、ESLint設定にも未導入の `prettier` がある。これを今回の写真機能の不具合と混同しない。
+- 実行環境：`.nvmrc` のNode.js 24.22.1（24系LTS）、`package.json` の `engines.node` は `24.x`。依存更新はnpm 12.2.1を基準とする。
+- lint確認：`npm run lint`。`eslint.config.mjs` のNext.js対応flat configを使い、`.local/`・ビルド出力を検査対象に含めない。
+- ビルド確認：`npx next build --webpack`。Next.jsの仕様確認はインストール済みの `node_modules/next/dist/docs/` を優先する。
 
 R2移行時も写真のUUIDと既存の選別結果を維持し、掲載済み画像の配信URLを更新する。取り込み・選別がR2キーに依存しない構成を保つ。
 
@@ -154,3 +156,13 @@ R2移行時も写真のUUIDと既存の選別結果を維持し、掲載済み�
 - 同名のR2オブジェクトは条件付きPUTで上書きを防ぎ、内容が同じ場合だけ再利用する。削除操作は行わない。6ファイルすべての公開URLの取得・内容照合が成功してから `.local/photos/r2-preview.json` を保存する。
 - `/photos/r2-preview` はローカル開発・選別モード専用。本番404。最初に確認した最大3枚のUUIDだけを表示し、現在の掲載対象から外れたものは表示しない。最新の掲載一覧に同じUUIDのR2画像があれば、そのURL・サムネイル・寸法を優先する。配信元は非公開の確認ファイルと完全一致するオリジンに限定し、従来のキーまたはUUID・ハッシュ形式の画像パスを検証する。不完全なURLは元の確認画像へ戻す。画面を開いても掲載一覧・UUID・選別結果は変更しない。
 - 再実行では前回の確認写真を再利用する。前回の写真が掲載対象から外れていた場合は停止し、別の写真を自動送信しない。ローカルでの掲載解除によるR2上の画像削除は未実装。
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

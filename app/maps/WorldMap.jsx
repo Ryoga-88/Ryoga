@@ -133,7 +133,10 @@ export default function WorldMap({ marks, routes, visitedCountries, activeCountr
   const [transform, setTransform] = useState(zoomIdentity);
   const [hovered, setHovered] = useState(null);
   const [hint, setHint] = useState(false);
-  focusRef.current = focus;
+
+  useLayoutEffect(() => {
+    focusRef.current = focus;
+  }, [focus]);
 
   useLayoutEffect(() => {
     const element = wrapperRef.current;

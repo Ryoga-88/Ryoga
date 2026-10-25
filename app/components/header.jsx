@@ -7,9 +7,10 @@ import { TbMenu2, TbX } from "react-icons/tb";
 import ThemeToggle from "app/components/theme-toggle";
 
 const NAV_ITEMS = [
-  { href: "/projects", label: "Projects" },
-  { href: "/photos", label: "Photos" },
+  // Archived: { href: "/projects", label: "Projects" },
   { href: "/blogs", label: "Blog" },
+  { href: "/photos", label: "Photos" },
+  { href: "/maps", label: "Maps" },
 ];
 
 const linkClass =
@@ -20,7 +21,9 @@ const drawerLinkClass =
 export default function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const isCurrent = (href) => pathname === href || pathname.startsWith(`${href}/`);
+  const currentItem = NAV_ITEMS.filter(({ href }) => pathname === href || pathname.startsWith(`${href}/`))
+    .sort((a, b) => b.href.length - a.href.length)[0];
+  const isCurrent = (href) => currentItem?.href === href;
 
   useEffect(() => {
     if (!menuOpen) return;

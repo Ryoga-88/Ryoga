@@ -30,6 +30,8 @@ export default function usePhotoSelection(photos) {
       if (event.key === SELECTION_KEY || event.key === null) restore();
     }
     restore();
+    // Enable selection only after browser storage has restored the saved checks.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setReady(true);
     window.addEventListener("storage", onStorage);
     window.addEventListener("focus", restore);

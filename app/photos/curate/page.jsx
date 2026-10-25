@@ -8,10 +8,15 @@ export const metadata = { title: "写真を選ぶ", robots: { index: false, foll
 
 export default async function CuratePage() {
   if (!localAccessAllowed(await headers(), { navigation: true })) notFound();
+  let data;
+  let loadFailed = false;
   try {
-    const data = await photoCuration.clientData();
-    return <Curator initialData={data} />;
+    data = await photoCuration.clientData();
   } catch {
+    loadFailed = true;
+  }
+  if (loadFailed) {
     return <div className="mx-auto max-w-page px-4 py-14"><h1 className="text-2xl font-bold">写真を取り込んでください</h1><p className="mt-4">ターミナルで <code>npm run photos:import</code> を実行してから、このページを開き直してください。</p></div>;
   }
+  return <Curator initialData={data} />;
 }

@@ -40,6 +40,7 @@ export async function GET() {
     `- [Projects](${absoluteUrl("/projects")})`,
     `- [Blog](${absoluteUrl("/blogs")})`,
     `- [Photos](${absoluteUrl("/photos")})`,
+    `- [Maps](${absoluteUrl("/maps")})`,
     "",
   ];
 
