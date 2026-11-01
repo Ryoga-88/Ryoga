@@ -9,7 +9,7 @@ const { publicPhotoMetadata } = require("./publicPhotoMetadata.cjs");
 const { withManifestLock } = require("./photoManifestLock.cjs");
 
 const UUID = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
-const EXCLUDED = new Set(["JP", "CN", "ES", "AL"]);
+const EXCLUDED = new Set(["JP", "ES", "AL"]);
 const MIN_FULL_EDGE = 1200;
 const CACHE_CONTROL = "public, max-age=31536000, immutable";
 const sources = new WeakMap();

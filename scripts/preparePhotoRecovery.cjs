@@ -10,7 +10,7 @@ const sharp = require("sharp");
 
 const run = promisify(execFile);
 const UUID = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
-const EXCLUDED_COUNTRIES = new Set(["JP", "CN", "ES", "AL"]);
+const EXCLUDED_COUNTRIES = new Set(["JP", "ES", "AL"]);
 const MINIMUM_EDGE = 1200;
 const APP_NAME = "Ryoga Photo Export.app";
 const executableName = "export-selected-photos";

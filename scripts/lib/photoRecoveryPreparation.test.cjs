@@ -18,7 +18,7 @@ async function fixture(t) {
   const decisions = Object.fromEntries(photos.map((photo) => [photo.id, "included"]));
   decisions[id(3)] = "excluded";
   await fs.writeFile(path.join(root, "app/contents/curated-photos.json"), JSON.stringify({ version: 1, decisions, photos }));
-  const countries = ["FR", "GB", "DE", "JP", "CN", "ES", "AL", null];
+  const countries = ["CN", "GB", "DE", "JP", "ES", "AL", null, null];
   await fs.writeFile(path.join(root, ".local/photos/catalog.json"), JSON.stringify({ version: 1,
     photos: photos.map((photo, index) => ({ id: photo.id, countryCode: countries[index] })),
   }));

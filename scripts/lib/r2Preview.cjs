@@ -55,7 +55,7 @@ async function buildPlan(root, config) {
   const photos = [];
   const objects = [];
   for (const photo of selected) {
-    if (!UUID.test(photo.id) || !photo.countryCode || ["JP", "CN", "ES", "AL"].includes(photo.countryCode)) throw fail("掲載対象のID・国を確認してください。");
+    if (!UUID.test(photo.id) || !photo.countryCode || ["JP", "ES", "AL"].includes(photo.countryCode)) throw fail("掲載対象のID・国を確認してください。");
     let fullMetadata;
     for (const suffix of ["", "-thumb"]) {
       const filename = `${photo.id}${suffix}.webp`;

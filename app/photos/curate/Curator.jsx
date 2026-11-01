@@ -265,7 +265,7 @@ export default function Curator({ initialData }) {
       <p className="curator-flow-note">「掲載対象」は掲載すると決めて保存した写真です。公開ブログへの反映はデプロイ後です。掲載対象だけの一覧を「掲載プレビュー」で確認できます。</p>
 
       <section className="curator-filters" aria-label="写真の絞り込み">
-        <div className="curator-filter-heading">国<span>中国・スペイン・アルバニアを除く</span></div>
+        <div className="curator-filter-heading">国<span>スペイン・アルバニアを除く</span></div>
         <div className="curator-countries" aria-label="国" role="group">
           <button type="button" aria-pressed={country === "all"} onClick={() => changeFilter(setCountry, country, "all")}>すべて<span>{number(photos.length)}</span></button>
           {countries.map((item) => <button type="button" key={item.code} aria-pressed={country === item.code} onClick={() => changeFilter(setCountry, country, item.code)}><CountryFlag category={item.code} />{item.label}<span>{number(item.count)}</span></button>)}

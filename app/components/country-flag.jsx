@@ -10,6 +10,7 @@ const COUNTRIES = {
   Philippines: "PH",
   "South Korea": "KR",
   "Vatican City": "VA",
+  China: "CN",
 };
 
 const FLAG_IMAGES = {
@@ -24,6 +25,7 @@ const FLAG_IMAGES = {
   PH: "/images/flags/ph.svg",
   KR: "/images/flags/kr.svg",
   VA: "/images/flags/va.svg",
+  CN: "/images/flags/cn.svg",
 };
 
 export default function CountryFlag({ countryCode, category }) {

@@ -274,7 +274,7 @@ private func run() throws -> Int32 {
     let manifestURL = root.appendingPathComponent("app/contents/curated-photos.json")
     let included = try includedIDs(at: manifestURL)
     let catalog = try decode(Catalog.self, from: local.appendingPathComponent("catalog.json"))
-    let excluded = Set(["JP", "CN", "ES", "AL"])
+    let excluded = Set(["JP", "ES", "AL"])
     let allowed = Set(catalog.photos.compactMap { photo -> String? in
         guard let country = photo.countryCode, !country.isEmpty,
               !excluded.contains(country.uppercased()) else { return nil }

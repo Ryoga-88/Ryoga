@@ -86,7 +86,7 @@ test("external links may navigate to the curator without relaxing API, image, if
 test("only eligible countries enter the client catalog, and private paths and coordinates stay private", async (t) => {
   const fixtureData = await fixture(t, [{}, { countryCode: "IT" }, { countryCode: "CN" }, { countryCode: "ES" }, { countryCode: "AL" }, { countryCode: "JP" }, { countryCode: null }, { id: "../private.jpg" }]);
   const data = await fixtureData.store.clientData();
-  assert.deepEqual(data.photos.map((photo) => photo.id), [id(1), id(2)]);
+  assert.deepEqual(data.photos.map((photo) => photo.id), [id(1), id(2), id(3)]);
   assert.equal(data.publishedCount, 0);
   assert.ok(data.photos.every((photo) => photo.status === "unreviewed"));
   const keys = new Set(allKeys(data));

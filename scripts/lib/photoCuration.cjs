@@ -12,7 +12,7 @@ const { highResolutionSource, MINIMUM_EDGE } = require("./photoHighResolution.cj
 const run = promisify(execFile);
 const UUID = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
 const STATUSES = new Set(["included", "excluded", "unreviewed"]);
-const EXCLUDED_COUNTRIES = new Set(["JP", "CN", "ES", "AL"]);
+const EXCLUDED_COUNTRIES = new Set(["JP", "ES", "AL"]);
 
 function highResolutionPending(photo) {
   return Boolean(photo && Number.isFinite(photo.width) && Number.isFinite(photo.height)

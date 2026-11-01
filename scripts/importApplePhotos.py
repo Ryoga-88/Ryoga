@@ -28,7 +28,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_LIBRARY = Path.home() / "Pictures" / "Photos Library.photoslibrary"
 DEFAULT_OUTPUT = PROJECT_ROOT / ".local" / "photos" / "catalog.json"
 APPLE_EPOCH = datetime(2001, 1, 1, tzinfo=timezone.utc)
-EXCLUDED_COUNTRIES = {"JP", "CN", "ES", "AL"}
+EXCLUDED_COUNTRIES = {"JP", "ES", "AL"}
 COUNTRIES = {
     "TH": ("タイ", "Thailand"),
     "VN": ("ベトナム", "Vietnam"),
@@ -41,6 +41,7 @@ COUNTRIES = {
     "PH": ("フィリピン", "Philippines"),
     "KR": ("韓国", "South Korea"),
     "VA": ("バチカン", "Vatican City"),
+    "CN": ("中国", "China"),
 }
 UUID_PATTERN = re.compile(
     r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
