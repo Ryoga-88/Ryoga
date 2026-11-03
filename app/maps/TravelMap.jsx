@@ -202,28 +202,36 @@ export default function TravelMap({ places, trips, years, countryNames, countryC
           </div>
         </WorldMap>
 
-        <div className="flex items-center gap-3 border-t border-line px-3 py-3 sm:px-4">
+        {/*
+          One row from md up: button, slider, readout. The readout has a fixed width so the
+          slider keeps its length while playing. Narrower screens move it under the slider.
+        */}
+        <div className="flex flex-wrap items-center gap-x-3 border-t border-line px-3 py-2 sm:px-4 md:flex-nowrap md:gap-x-4">
           <button
             type="button"
             onClick={togglePlay}
             aria-label={playing ? "一時停止" : "巡った順に再生"}
-            className="grid size-9 shrink-0 place-items-center rounded-full bg-ink text-bg transition-opacity hover:opacity-80"
+            className="grid size-7 shrink-0 place-items-center rounded-full bg-ink text-bg transition-opacity hover:opacity-80"
           >
-            {playing ? <TbPlayerPauseFilled aria-hidden="true" className="size-4" /> : <TbPlayerPlayFilled aria-hidden="true" className="size-4" />}
+            {playing ? <TbPlayerPauseFilled aria-hidden="true" className="size-3.5" /> : <TbPlayerPlayFilled aria-hidden="true" className="size-3.5" />}
           </button>
-          <div className="min-w-0 flex-1">
-            <input
-              type="range"
-              min={0}
-              max={lastStep}
-              value={step ?? lastStep}
-              onChange={(event) => goTo(Number(event.target.value))}
-              aria-label="巡った順番"
-              aria-valuetext={readout}
-              className="block w-full accent-accent"
-            />
-            <p className="mt-1 truncate text-xs tabular-nums text-muted" aria-live={playing ? "off" : "polite"}>{readout}</p>
-          </div>
+          <input
+            type="range"
+            min={0}
+            max={lastStep}
+            value={step ?? lastStep}
+            onChange={(event) => goTo(Number(event.target.value))}
+            aria-label="巡った順番"
+            aria-valuetext={readout}
+            className="map-scrubber min-w-0 flex-1"
+            style={{ "--progress": lastStep > 0 ? (step ?? lastStep) / lastStep : 1 }}
+          />
+          <p
+            className="-mt-1 w-full truncate pl-10 text-xs tabular-nums text-muted md:mt-0 md:w-[22rem] md:shrink-0 md:pl-0"
+            aria-live={playing ? "off" : "polite"}
+          >
+            {readout}
+          </p>
         </div>
 
         {selectedPlace && (

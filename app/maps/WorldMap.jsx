@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { geoContains, geoNaturalEarth1, geoPath } from "d3-geo";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { geoContains, geoGraticule10, geoNaturalEarth1, geoPath } from "d3-geo";
 import { select } from "d3-selection";
 import "d3-transition";
 import { zoom, zoomIdentity } from "d3-zoom";
@@ -17,6 +17,7 @@ const MAX_FIT_ZOOM = 32;
 const MAX_DODGE = 10;
 const CONTROLS_WIDTH = 52;
 const ANTARCTICA = "010";
+const FRAME_FADE_MS = 900; // matches .map-frame in travel-map.css
 
 // Natural Earth uses ISO numeric ids. Tiny countries must be listed; others are found by position.
 const COUNTRY_IDS = {
@@ -28,23 +29,46 @@ const COUNTRY_IDS = {
 
 const tone = (value) => (value === "dim" ? "var(--map-dim)" : `rgb(var(--map-year-${value}))`);
 
-function useWorld() {
-  const [world, setWorld] = useState(null);
-  useEffect(() => {
-    let active = true;
-    import("world-atlas/countries-50m.json").then(({ default: topology }) => {
-      if (!active) return;
+// The loading frame: a 10° graticule and the outline of the globe, in the same space as the land.
+const outlinePath = geoPath(projection).digits(1);
+const GRATICULE = outlinePath(geoGraticule10());
+const SPHERE = outlinePath({ type: "Sphere" });
+
+// Loaded once per session, so coming back to the map skips the download and the projection.
+let worldState = null; // null while loading, then the land or { failed: true }
+let worldRequest = null;
+const worldListeners = new Set();
+
+function loadWorld() {
+  if (worldRequest || (worldState && !worldState.failed)) return;
+  worldRequest = import("world-atlas/countries-50m.json")
+    .then(({ default: topology }) => {
       const path = geoPath(projection).digits(2);
       const features = feature(topology, topology.objects.countries).features.filter((item) => item.id !== ANTARCTICA);
-      setWorld({
+      return {
         countries: features.map((item) => ({ id: item.id, feature: item, d: path(item) })),
         borders: path(mesh(topology, topology.objects.countries, (a, b) => a !== b)),
-      });
-    }).catch(() => active && setWorld({ countries: [], borders: "", failed: true }));
-    return () => { active = false; };
-  }, []);
-  return world;
+      };
+    })
+    .catch(() => ({ countries: [], borders: "", failed: true }))
+    .then((value) => {
+      worldState = value;
+      if (value.failed) worldRequest = null; // the next visit tries again
+      for (const listener of worldListeners) listener();
+    });
 }
+
+// Start the download as soon as the page script runs, not after the first render.
+if (typeof window !== "undefined") loadWorld();
+
+function subscribeWorld(listener) {
+  worldListeners.add(listener);
+  loadWorld();
+  return () => worldListeners.delete(listener);
+}
+
+// The server and hydration always render the loading state.
+const useWorld = () => useSyncExternalStore(subscribeWorld, () => worldState, () => null);
 
 function textWidth(text) {
   let width = 0;
@@ -129,6 +153,8 @@ export default function WorldMap({ marks, routes, visitedCountries, activeCountr
   const fittedKey = useRef(null);
   const hintTimer = useRef(null);
   const world = useWorld();
+  const status = !world ? "loading" : world.failed ? "failed" : "ready";
+  const [frameGone, setFrameGone] = useState(false);
   const [size, setSize] = useState(null);
   const [transform, setTransform] = useState(zoomIdentity);
   const [hovered, setHovered] = useState(null);
@@ -208,6 +234,13 @@ export default function WorldMap({ marks, routes, visitedCountries, activeCountr
 
   useEffect(() => () => clearTimeout(hintTimer.current), []);
 
+  // Remove the frame once the land has faded in over it.
+  useEffect(() => {
+    if (status !== "ready") return undefined;
+    const timer = setTimeout(() => setFrameGone(true), FRAME_FADE_MS);
+    return () => clearTimeout(timer);
+  }, [status]);
+
   const countryIds = useMemo(() => {
     if (!world) return new Map();
     const result = new Map();
@@ -263,85 +296,114 @@ export default function WorldMap({ marks, routes, visitedCountries, activeCountr
 
   return (
     <div ref={wrapperRef} onWheel={showHint} className="relative aspect-[4/3] w-full overflow-hidden sm:aspect-[16/10]">
+      {size && !frameGone && (
+        <svg
+          aria-hidden="true"
+          width={size.width}
+          height={size.height}
+          className={`map-frame absolute inset-0 block is-${status}`}
+        >
+          <g transform={`translate(${transform.x},${transform.y}) scale(${transform.k}) translate(0,${base.dy}) scale(${base.scale})`}>
+            <path d={GRATICULE} className="map-graticule" vectorEffect="non-scaling-stroke" />
+            <path d={SPHERE} className="map-sphere" vectorEffect="non-scaling-stroke" />
+          </g>
+        </svg>
+      )}
       {size && (
-        <svg ref={svgRef} width={size.width} height={size.height} className="absolute inset-0 block cursor-grab active:cursor-grabbing" role="group" aria-label="旅の地図">
+        <svg ref={svgRef} width={size.width} height={size.height} className="absolute inset-0 block cursor-grab active:cursor-grabbing" role="group" aria-label="旅の地図" aria-busy={status === "loading"}>
           <g transform={`translate(${transform.x},${transform.y}) scale(${transform.k})`}>
-            <g transform={`translate(0,${base.dy}) scale(${base.scale})`} className={`map-land${land ? " is-ready" : ""}`}>
+            <g transform={`translate(0,${base.dy}) scale(${base.scale})`} className={`map-land${status === "ready" ? " is-ready" : ""}`}>
               {land}
             </g>
           </g>
-          <g>
-            {routes.map((route) => {
-              const from = byId.get(route.from);
-              const to = byId.get(route.to);
-              if (!from || !to) return null;
-              const shape = arc(from, to);
-              const color = tone(route.tone);
-              return (
-                <g key={route.key}>
-                  <path d={shape.d} pathLength={1} stroke={color} className={`map-route${route.isNew ? " is-new" : ""}`} />
-                  {route.arrow && shape.length > 56 && (
-                    <path
-                      d="M-3.5,-4 L1.5,0 L-3.5,4"
-                      transform={`translate(${shape.mid.x.toFixed(1)},${shape.mid.y.toFixed(1)}) rotate(${shape.angle.toFixed(1)})`}
-                      fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
-                      className={route.isNew ? "map-arrow is-new" : "map-arrow"}
-                    />
-                  )}
-                </g>
-              );
-            })}
-          </g>
-          <g>
-            {points.map((point) => {
-              const color = tone(point.tone);
-              const focusRing = hovered === point.id || point.selected;
-              return (
-                <g
-                  key={point.id}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={point.ariaLabel}
-                  aria-pressed={point.selected}
-                  className="map-place"
-                  transform={`translate(${point.x.toFixed(1)},${point.y.toFixed(1)})`}
-                  onClick={() => onSelect(point.id)}
-                  onKeyDown={(event) => {
-                    if (event.key !== "Enter" && event.key !== " ") return;
-                    event.preventDefault();
-                    onSelect(point.id);
-                  }}
-                  onPointerEnter={() => setHovered(point.id)}
-                  onPointerLeave={() => setHovered((current) => (current === point.id ? null : current))}
-                  onFocus={() => setHovered(point.id)}
-                  onBlur={() => setHovered((current) => (current === point.id ? null : current))}
-                >
-                  <circle r={Math.max(12, point.r + 4)} fill="transparent" />
-                  {point.current && <circle r={point.r + 3} stroke={color} className="map-pulse" />}
-                  {focusRing && <circle r={point.r + 3.5} fill="none" stroke="rgb(var(--c-ink))" strokeWidth={1.5} />}
-                  {point.variant === "ring" && <circle r={point.r} fill="rgb(var(--c-bg))" stroke={color} strokeWidth={1.5} />}
-                  {point.variant === "dot" && <circle r={point.r} fill={color} stroke="rgb(var(--c-bg))" strokeWidth={2} />}
-                  {point.variant === "badge" && (
-                    // Station style: ink numbers on the surface stay legible on every year colour.
-                    <>
-                      <circle r={point.r} fill="rgb(var(--c-bg))" stroke={color} strokeWidth={2.5} />
-                      <text textAnchor="middle" dominantBaseline="central" className="pointer-events-none fill-ink text-[10px] font-bold tabular-nums">
-                        {point.number}
-                      </text>
-                    </>
-                  )}
-                </g>
-              );
-            })}
-          </g>
-          <g>
-            {labels.map((label) => (
-              <text key={label.id} x={label.x} y={label.y} textAnchor={label.anchor} dominantBaseline="central" className={`map-label${label.strong ? " font-bold" : ""}`}>
-                {label.text}
-              </text>
-            ))}
+          {/* Routes, places and names wait for the land, then arrive in that order. */}
+          <g className={`map-overlay${status === "loading" ? "" : " is-ready"}`}>
+            <g>
+              {routes.map((route) => {
+                const from = byId.get(route.from);
+                const to = byId.get(route.to);
+                if (!from || !to) return null;
+                const shape = arc(from, to);
+                const color = tone(route.tone);
+                return (
+                  <g key={route.key}>
+                    <path d={shape.d} pathLength={1} stroke={color} className={`map-route${route.isNew ? " is-new" : ""}`} />
+                    {route.arrow && shape.length > 56 && (
+                      <path
+                        d="M-3.5,-4 L1.5,0 L-3.5,4"
+                        transform={`translate(${shape.mid.x.toFixed(1)},${shape.mid.y.toFixed(1)}) rotate(${shape.angle.toFixed(1)})`}
+                        fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"
+                        className={route.isNew ? "map-arrow is-new" : "map-arrow"}
+                      />
+                    )}
+                  </g>
+                );
+              })}
+            </g>
+            <g>
+              {points.map((point) => {
+                const color = tone(point.tone);
+                const focusRing = hovered === point.id || point.selected;
+                return (
+                  <g
+                    key={point.id}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={point.ariaLabel}
+                    aria-pressed={point.selected}
+                    className="map-place"
+                    transform={`translate(${point.x.toFixed(1)},${point.y.toFixed(1)})`}
+                    onClick={() => onSelect(point.id)}
+                    onKeyDown={(event) => {
+                      if (event.key !== "Enter" && event.key !== " ") return;
+                      event.preventDefault();
+                      onSelect(point.id);
+                    }}
+                    onPointerEnter={() => setHovered(point.id)}
+                    onPointerLeave={() => setHovered((current) => (current === point.id ? null : current))}
+                    onFocus={() => setHovered(point.id)}
+                    onBlur={() => setHovered((current) => (current === point.id ? null : current))}
+                  >
+                    <circle r={Math.max(12, point.r + 4)} fill="transparent" />
+                    {point.current && <circle r={point.r + 3} stroke={color} className="map-pulse" />}
+                    {focusRing && <circle r={point.r + 3.5} fill="none" stroke="rgb(var(--c-ink))" strokeWidth={1.5} />}
+                    <g className="map-mark">
+                      {point.variant === "ring" && <circle r={point.r} fill="rgb(var(--c-bg))" stroke={color} strokeWidth={1.5} />}
+                      {point.variant === "dot" && <circle r={point.r} fill={color} stroke="rgb(var(--c-bg))" strokeWidth={2} />}
+                      {point.variant === "badge" && (
+                        // Station style: ink numbers on the surface stay legible on every year colour.
+                        <>
+                          <circle r={point.r} fill="rgb(var(--c-bg))" stroke={color} strokeWidth={2.5} />
+                          <text textAnchor="middle" dominantBaseline="central" className="pointer-events-none fill-ink text-[10px] font-bold tabular-nums">
+                            {point.number}
+                          </text>
+                        </>
+                      )}
+                    </g>
+                  </g>
+                );
+              })}
+            </g>
+            <g>
+              {labels.map((label) => (
+                <text key={label.id} x={label.x} y={label.y} textAnchor={label.anchor} dominantBaseline="central" className={`map-label${label.strong ? " font-bold" : ""}`}>
+                  {label.text}
+                </text>
+              ))}
+            </g>
           </g>
         </svg>
+      )}
+
+      {!frameGone && (
+        <p
+          role="status"
+          aria-hidden={status !== "loading"}
+          className={`map-loading pointer-events-none absolute inset-x-0 top-1/2 mx-auto w-max -translate-y-1/2${status === "loading" ? "" : " is-done"}`}
+        >
+          {/* Shown only when loading takes a while, so a fast load never flashes it. */}
+          <span className="block rounded-full bg-bg/85 px-3.5 py-1.5 text-xs tracking-wide text-muted backdrop-blur">地図を読み込んでいます</span>
+        </p>
       )}
 
       {tooltipPoint && (
