@@ -1,0 +1,4 @@
+interface:
+  display_name: "RyogaのBlog文章"
+  short_description: "公開note記事に基づき、Ryogaの語り口でエッセイや研究報告を書く"
+  default_prompt: "$ryoga-blog-writing を使って、渡した経験やメモから、いつものnoteの語り口で記事の草稿を書いてください。"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "RyogaのBlog図解"
+  short_description: "公開noteの白背景と少数の色を使うスタイルで、日本語の説明図を作る"
+  default_prompt: "$ryoga-blog-diagrams を使って、この記事の大事な関係を、白背景で読みやすい日本語の図にしてください。"

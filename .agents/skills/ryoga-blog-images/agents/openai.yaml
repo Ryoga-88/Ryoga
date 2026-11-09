@@ -1,0 +1,4 @@
+interface:
+  display_name: "RyogaのBlog画像"
+  short_description: "公開noteの写真表紙と余白の多い線画を参考に、Blog画像を作る"
+  default_prompt: "$ryoga-blog-images を使って、この記事に合う写真調の表紙と、余白の多い線画の本文挿絵を作ってください。"

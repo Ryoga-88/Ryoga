@@ -7,6 +7,13 @@
 - 本人が提供していない経験や、測っていない効果を補作しない。生成画像と体験の実写真、概念図と実測データを区別する。
 - 草稿作成と、公開済みnoteのBlogへの追加は別の作業。記事を追加する場合は下記のメタデータ・画像・確認手順に従う。
 
+## Blog：クラウドでの作成
+
+- 文章・画像・図解のskillと参照資料は `.agents/skills/ryoga-blog-writing/`・`.agents/skills/ryoga-blog-images/`・`.agents/skills/ryoga-blog-diagrams/` に同梱している。このリポジトリでは同梱版を参照し、Mac個人用フォルダの絶対パスに依存しない。
+- セットアップ・起動・保存の手順は `docs/blog-cloud.md`。依存導入は `npm run cloud:setup`、プレビューは `npm run blog:dev`、本番相当のビルドは `npm run blog:build`。ブログ執筆用環境では `PHOTO_CURATION=0` を維持する。
+- 草稿は原則 `.local/blog/<slug>/` に保存し、クラウド作業を終える前に成果物を渡す。Git保存を依頼された場合だけ `drafts/blog/<slug>/draft.md` を使う。草稿作成の依頼だけで、サイト掲載対象の `app/contents/blogs/` へ追加しない。
+- ローカルの草稿・画像・個人用skill・秘密値はクラウドへ自動同期されない。画像生成ツールが使えない場合は生成済みとせず、作成可能な図と画像仕様を渡す。写真の取り込み・復旧は引き続きMac専用。
+
 ## Blog：note記事の追加とプレビュー画像
 
 - noteの記事を追加するときは、既存記事と同じく `app/contents/blogs/YYYY-MM-DD-<slug>.ja.md` にタイトル・公開日・概要を保存する。日付は下書き作成日ではなく公開日を使う。`externalUrl` は共有用クエリを除いた正規URLにし、自動取得したnote記事と重複させない。

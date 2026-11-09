@@ -17,6 +17,12 @@ npx next build --webpack
 
 `overrides` は間接依存の `brace-expansion` と `postcss-selector-parser` を修正版へ固定しています。変更時は `npm audit` とビルド・画面表示を確認してください。
 
+## クラウドでBlog・noteを作る
+
+文章・画像・図解のskillと参照資料は `.agents/skills/` に同梱しています。Codex Cloudの設定・草稿の保存・プレビュー手順は [docs/blog-cloud.md](docs/blog-cloud.md) を参照してください。
+
+Node.jsを `.nvmrc` に合わせてから、`npm run cloud:setup` で依存関係を導入し、`npm run blog:dev` でポート3000のプレビューを起動できます。秘密鍵やMacの写真ライブラリは不要です。
+
 ## 写真を選別する（このMac専用）
 
 ```bash
